@@ -14,25 +14,13 @@ const App = () => {
   }
 
   return (
-    <View className="flex-1 items-center justify-center bg-slate-300 p-4">
-      <Image
-        source={logoImage}
-        style={{ width: 200, height: 200 }}
-        resizeMode="contain"
-      />
-      <Text className="text-2xl text-slate-500 font-extrabold mt-4">
-        Selamat Datang di Aplikasi Prokerku!
-      </Text>
-      <Text className="text-lg text-slate-500 mt-2 text-center">
-        Prokerku adalah aplikasi untuk mengelola program kerja Anda dengan mudah
-        dan efisien.
-      </Text>
+    <View className="items-center justify-center flex-1 p-4 bg-slate-300">
+      <Image source={logoImage} style={{ width: 200, height: 200 }} resizeMode="contain" />
+      <Text className="mt-4 text-2xl font-extrabold text-slate-500">Selamat Datang di Aplikasi Prokerku!</Text>
+      <Text className="mt-2 text-lg text-center text-slate-500">Prokerku adalah aplikasi untuk mengelola program kerja Anda dengan mudah dan efisien.</Text>
       <StatusBar style="auto" />
-      <TouchableOpacity className="absolute bottom-5 p-3 bg-blue-500 rounded">
-        <Link
-          href="/home"
-          className="text-white text-2xl font-semibold hover:text-blue-300"
-        >
+      <TouchableOpacity className="absolute p-3 bg-blue-500 rounded bottom-5">
+        <Link href="/sign-in" className="text-2xl font-semibold text-white hover:text-blue-300">
           Pergi ke Home
         </Link>
       </TouchableOpacity>
