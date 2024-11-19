@@ -6,6 +6,10 @@ module.exports = {
     extend: {
       colors: {
         primary: "#00FF9C",
+        darkBackground: "#1a1a1a",
+        lightBackground: "#f5f5f5",
+        darkText: "#ffffff",
+        lightText: "#000000",
       },
       fontFamily: {
         pthin: ["Poppins-Thin", "sans-serif"],
