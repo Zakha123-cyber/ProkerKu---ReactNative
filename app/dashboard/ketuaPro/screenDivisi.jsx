@@ -11,7 +11,7 @@ const divisions = [
 ];
 
 // Fungsi untuk menangani saat divisi dipilih
-const handleDivisionPress = (router) => (divisionName) => {
+const handleDivisionPress = (router, divisionName) => {
   const encodedName = encodeURIComponent(divisionName); // Mengencode nama divisi dengan benar
   router.push(`/dashboard/ketuaPro/screenJobs/${encodedName}`);
 };
@@ -30,7 +30,7 @@ const ScreenDivisi = () => {
         {divisions.map((division) => (
           <TouchableOpacity
             key={division.id}
-            onPress={handleDivisionPress(router)(division.name)} // Menavigasi ke screenJobs dengan divisi
+            onPress={() => handleDivisionPress(router, division.name)} // Menavigasi ke screenJobs dengan divisi
             className="bg-white py-4 px-6 mb-2 rounded-lg shadow-md"
           >
             <Text className="text-lg font-bold">{division.name}</Text>

@@ -1,66 +1,84 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import FormField from "../../../components/FormField"; 
-import { Feather } from '@expo/vector-icons'; 
+import { Feather } from "@expo/vector-icons";
 
-const editDivisi = () => {
+const EditDivisi = () => {
   const [form, setForm] = useState({
-    judul: '',
-    Deskripsi: '',
-    Deadline: '',
+    judul: "",
+    deskripsi: "",
+    deadline: "",
   });
 
   const handleSaveClick = () => {
     alert("Divisi berhasil diperbarui!");
   };
 
+  const handleChange = (name, value) => {
+    setForm({ ...form, [name]: value });
+  };
+
   return (
-    <SafeAreaView className="bg-white h-full">
-      <ScrollView className="px-4 my-6">
-        <Text className="text-2xl font-bold text-center mb-6">Edit Divisi</Text>
-
-        {/* Wrapper for each input field */}
-        <View className="bg-gray-100 p-4 rounded-lg shadow-md mb-4">
-          <FormField
-            title="Nama Divisi"
-            value={form.judul}
-            placeholder="Masukan Nama Divisi"
-            handleChangeText={(e) => setForm({ ...form, judul: e })}
-            otherStyles={"mt-2"}
-          />
+    <SafeAreaView className="flex-1 bg-gray-100">
+      <View className="flex-1 justify-center items-center px-4">
+        <View className="w-full bg-white p-6 rounded-lg border-2 border-green-500 shadow-lg">
+          <Text className="text-2xl text-green-500 font-bold mb-6 text-center">
+            Edit Divisi
+          </Text>
+          <ScrollView className="space-y-4">
+            <View>
+              <Text className="text-sm text-green-500 font-medium">Judul:</Text>
+              <TextInput
+                className="mt-2 p-2 bg-gray-200 text-black rounded border border-green-500"
+                placeholder="Masukkan judul"
+                placeholderTextColor="#888"
+                value={form.judul}
+                onChangeText={(text) => handleChange("judul", text)}
+              />
+            </View>
+            <View>
+              <Text className="text-sm text-green-500 font-medium">
+                Deskripsi:
+              </Text>
+              <TextInput
+                className="mt-2 p-2 bg-gray-200 text-black rounded border border-green-500"
+                placeholder="Masukkan deskripsi"
+                placeholderTextColor="#888"
+                value={form.deskripsi}
+                onChangeText={(text) => handleChange("deskripsi", text)}
+                multiline
+                numberOfLines={4}
+              />
+            </View>
+            <View>
+              <Text className="text-sm text-green-500 font-medium">
+                Deadline:
+              </Text>
+              <TextInput
+                className="mt-2 p-2 bg-gray-200 text-black rounded border border-green-500"
+                placeholder="Masukkan deadline"
+                placeholderTextColor="#888"
+                value={form.deadline}
+                onChangeText={(text) => handleChange("deadline", text)}
+              />
+            </View>
+            <TouchableOpacity
+              onPress={handleSaveClick}
+              className="mt-6 p-3 bg-green-500 rounded-lg items-center"
+            >
+              <Text className="text-white font-medium">Simpan</Text>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
-
-        <View className="bg-gray-100 p-4 rounded-lg shadow-md mb-4">
-          <FormField
-            title="Deskripsi"
-            value={form.Deskripsi}
-            placeholder="Masukan Deskripsi"
-            handleChangeText={(e) => setForm({ ...form, Deskripsi: e })}
-            otherStyles={"mt-2"}
-          />
-        </View>
-
-        <View className="bg-gray-100 p-4 rounded-lg shadow-md mb-4">
-          <FormField
-            title="anggota"
-            value={form.Deadline}
-            placeholder="Masukan anggota"
-            handleChangeText={(e) => setForm({ ...form, Deadline: e })}
-            otherStyles={"mt-2"}
-          />
-        </View>
-
-        <TouchableOpacity
-          onPress={handleSaveClick}
-          className="mt-8 p-3 bg-green-500 rounded-2xl w-full max-w-md shadow-lg"
-        >
-          <Text className="text-white text-center text-lg font-semibold">Save</Text>
-          <Feather name="check-circle" size={24} color="white" style={{ position: 'absolute', right: 10 }} />
-        </TouchableOpacity>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
 
-export default editDivisi;
+export default EditDivisi;
