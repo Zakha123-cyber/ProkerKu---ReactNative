@@ -60,7 +60,7 @@ const Upload = () => {
 
         <TouchableOpacity
           onPress={handleUploadClick}
-          className="mt-8 p-3 bg-blue-500 rounded-2xl w-full max-w-md"
+          className="mt-8 p-3 bg-green-500 rounded-2xl w-full max-w-md"
         >
           <Text className="text-white text-center text-lg font-semibold">Upload Sertifikat</Text>
         </TouchableOpacity>

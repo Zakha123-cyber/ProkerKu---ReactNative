@@ -1,8 +1,8 @@
-import React from "react";
-import Home from "../../(tabs)/home";
+// import React from "react";
+// import Home from "../../(tabs)/home";
 
-const Index = () => {
-  return <Home />;
-};
+// const Index = () => {
+//   return <Home />;
+// };
 
-export default Index;
+// export default Index;

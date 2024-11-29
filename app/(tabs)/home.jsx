@@ -10,11 +10,11 @@ const Home = () => {
     <View className="px-4 my-6 space-y-6">
       <View className="flex-row items-center justify-between mb-6">
         <View>
-          <Text className="mb-4 text-sm text-gray-100 font-pmedium">
+          <Text className="mb-4 text-sm text-green-500 font-pmedium">
             Selamat Datang
           </Text>
           <Text
-            className="text-2xl text-white font-pextrabold"
+            className="text-2xl text-green-500 font-pextrabold"
             style={{ fontSize: 25 }}
           >
             Mas Ahnaf
@@ -23,7 +23,7 @@ const Home = () => {
         <View className="mt-1.5">
           <Image
             source={images.logoProkerKu}
-            className="w-20 h-20 scale-[2.5]"
+            style={{ width: 80, height: 80 }}
             resizeMode="contain"
           />
         </View>
@@ -32,9 +32,11 @@ const Home = () => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-900">
+    <SafeAreaView className="flex-1 bg-gray-100">
       {renderHeader()}
-      <SearchInput />
+      <View className="px-4">
+        <SearchInput className="border border-green-500 rounded-lg p-2" />
+      </View>
       <ListProker />
     </SafeAreaView>
   );
