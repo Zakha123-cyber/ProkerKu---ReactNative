@@ -26,7 +26,7 @@ const Upload = () => {
           title="Nama Anggota"
           value={form.nameAnggota}
           handleChangeText={(e) => setForm({ ...form, nameAnggota: e })}
-          otherStyles="mt-7" // Pastikan ini sesuai dengan yang Anda gunakan di FormField
+          otherStyles="mt-7" // 
         />
 
         <View className="mt-7 space-y-2" />

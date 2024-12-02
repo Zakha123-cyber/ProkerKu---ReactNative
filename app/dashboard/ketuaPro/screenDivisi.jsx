@@ -20,8 +20,8 @@ const ScreenDivisi = () => {
   const router = useRouter();
 
   return (
-    <View className="flex-1 bg-gray-100">
-      <View className="bg-blue-500 py-4 px-6 mb-4 rounded-b-lg">
+    <View className="flex-1 bg-green-100">
+      <View className="bg-green-500 py-4 px-6 mb-4 rounded-b-lg">
         <Text className="text-white text-lg font-bold text-center">
           Pilih Divisi
         </Text>
@@ -33,7 +33,7 @@ const ScreenDivisi = () => {
             onPress={() => handleDivisionPress(router, division.name)} // Menavigasi ke screenJobs dengan divisi
             className="bg-white py-4 px-6 mb-2 rounded-lg shadow-md"
           >
-            <Text className="text-lg font-bold">{division.name}</Text>
+            <Text className="text-lg font-bold text-green-700">{division.name}</Text>
           </TouchableOpacity>
         ))}
       </View>

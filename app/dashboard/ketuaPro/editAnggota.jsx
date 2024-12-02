@@ -4,9 +4,9 @@ import images from '../../../assets/images/proker.png';
 
 const EditJobDesk = () => {
   const [form, setForm] = useState({
-    judul: '',
-    deskripsi: '',
-    deadline: '',
+    nama: '',
+    divisi: '',
+    jabatan: '',
   });
 
   const handleChange = (name, value) => {
@@ -20,7 +20,7 @@ const EditJobDesk = () => {
   return (
     <View className="flex-1 bg-gray-100 p-6">
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}>
-        <Text className="text-3xl font-bold text-center mb-6 text-green-600">Edit Jobdesk</Text>
+        <Text className="text-3xl font-bold text-center mb-6 text-green-600">Edit Anggota</Text>
 
         {/* Image Section */}
         <View className="flex items-center mb-6">
@@ -32,7 +32,7 @@ const EditJobDesk = () => {
         </View>
 
         <View className="border-2 border-green-500 rounded-lg p-6 bg-white mb-6 shadow-md">
-          <Text className="text-gray-700 text-lg font-semibold">Judul:</Text>
+          <Text className="text-gray-700 text-lg font-semibold">nama:</Text>
           <TextInput
             className="border border-gray-300 rounded-lg p-3 mt-2 placeholder-gray-400"
             placeholder="Masukkan judul"
@@ -41,20 +41,20 @@ const EditJobDesk = () => {
             onChangeText={(text) => handleChange('judul', text)}
           />
 
-          <Text className="text-gray-700 text-lg font-semibold mt-4">Deskripsi:</Text>
+          <Text className="text-gray-700 text-lg font-semibold mt-4">divisi:</Text>
           <TextInput
-            className="border border-gray-300 rounded-lg p-3 mt-2 h-24 placeholder-gray-400"
-            placeholder="Masukkan deskripsi"
+            className="border border-gray-300 rounded-lg p-3 mt-2 placeholder-gray-400"
+            placeholder="Masukkan divisi"
             placeholderTextColor="#A0AEC0" 
             value={form.deskripsi}
             onChangeText={(text) => handleChange('deskripsi', text)}
             multiline
           />
 
-          <Text className="text-gray-700 text-lg font-semibold mt-4">Deadline:</Text>
+          <Text className="text-gray-700 text-lg font-semibold mt-4">jabatan:</Text>
           <TextInput
             className="border border-gray-300 rounded-lg p-3 mt-2 placeholder-gray-400"
-            placeholder="Masukkan deadline"
+            placeholder="Masukkan jabatan"
             placeholderTextColor="#A0AEC0" 
             value={form.deadline}
             onChangeText={(text) => handleChange('deadline', text)}

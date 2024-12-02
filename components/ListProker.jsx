@@ -46,6 +46,27 @@ const ListProker = () => {
             <Text className="text-gray-400 font-pregular text-center">Upload Sertifikat</Text>
           </TouchableOpacity>
         </Link>
+
+        <Link href="/dashboard/ketuaPro/editAnggota" asChild>
+          <TouchableOpacity className="flex items-center w-1/3">
+            <Image source={icons.plus} className="w-5 h-5" resizeMode="contain" />
+            <Text className="text-gray-400 font-pregular text-center">edit Anggota</Text>
+          </TouchableOpacity>
+        </Link>
+
+        <Link href="/dashboard/ketum/manajemenAnggota" asChild>
+          <TouchableOpacity className="flex items-center w-1/3">
+            <Image source={icons.plus} className="w-5 h-5" resizeMode="contain" />
+            <Text className="text-gray-400 font-pregular text-center">anggota</Text>
+          </TouchableOpacity>
+        </Link>
+
+        <Link href="/dashboard/ketum/detailProker" asChild>
+          <TouchableOpacity className="flex items-center w-1/3">
+            <Image source={icons.plus} className="w-5 h-5" resizeMode="contain" />
+            <Text className="text-gray-400 font-pregular text-center">detail proker</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
     </ScrollView>
   );

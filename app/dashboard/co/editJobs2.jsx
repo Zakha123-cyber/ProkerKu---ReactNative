@@ -4,7 +4,7 @@ import images from '../../../assets/images/proker.png';
 
 const EditJobDesk = () => {
   const [form, setForm] = useState({
-    judul: '',
+    PJ: '',
     deskripsi: '',
     deadline: '',
   });
@@ -32,10 +32,10 @@ const EditJobDesk = () => {
         </View>
 
         <View className="border-2 border-green-500 rounded-lg p-6 bg-white mb-6 shadow-md">
-          <Text className="text-gray-700 text-lg font-semibold">Judul:</Text>
+          <Text className="text-gray-700 text-lg font-semibold">PJ:</Text>
           <TextInput
             className="border border-gray-300 rounded-lg p-3 mt-2 placeholder-gray-400"
-            placeholder="Masukkan judul"
+            placeholder="Masukkan PJ"
             placeholderTextColor="#A0AEC0" 
             value={form.judul}
             onChangeText={(text) => handleChange('judul', text)}
