@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, ScrollView, Pressable, TextInput, Alert } from 'react-native';
+import { View, Text, Image, ScrollView, Pressable, TextInput, Alert, TouchableOpacity } from 'react-native';
 
 const DetailProkerScreen = () => {
     // Data statis untuk proker
@@ -52,13 +52,13 @@ const DetailProkerScreen = () => {
     };
 
     return (
-        <ScrollView className='flex-1 bg-white p-4'>
+        <ScrollView className='flex-1 p-4 bg-white'>
             {/* Pembungkus dengan garis hijau */}
-            <View className='border-2 border-green-500 rounded-lg p-4'>
+            <View className='p-4 border-2 border-green-500 rounded-lg'>
                 {/* Gambar Proker */}
                 <Image 
                     source={{ uri: proker.image }} 
-                    className='w-full h-60 rounded-lg mb-4' 
+                    className='w-full mb-4 rounded-lg h-60' 
                     resizeMode='cover' 
                 />
                 
@@ -67,14 +67,14 @@ const DetailProkerScreen = () => {
                     <TextInput
                         value={proker.nama}
                         onChangeText={(text) => setProker({ ...proker, nama: text })}
-                        className='text-2xl font-bold mb-2 border-b-2 border-gray-300'
+                        className='mb-2 text-2xl font-bold border-b-2 border-gray-300'
                     />
                 ) : (
-                    <Text className='text-2xl font-bold mb-2'>{proker.nama}</Text>
+                    <Text className='mb-2 text-2xl font-bold'>{proker.nama}</Text>
                 )}
 
                 {/* Timeline */}
-                <View className='border-2 border-gray-300 rounded-lg p-2 mb-2'>
+                <View className='p-2 mb-2 border-2 border-gray-300 rounded-lg'>
                     {isEditing ? (
                         <TextInput
                             value={proker.timeline}
@@ -87,7 +87,7 @@ const DetailProkerScreen = () => {
                 </View>
 
                 {/* Ketua */}
-                <View className='border-2 border-gray-300 rounded-lg p-2 mb-2'>
+                <View className='p-2 mb-2 border-2 border-gray-300 rounded-lg'>
                     {isEditing ? (
                         <TextInput
                             value={proker.ketua}
@@ -100,10 +100,10 @@ const DetailProkerScreen = () => {
                 </View>
 
                 {/* Anggota */}
-                <View className='border-2 border-gray-300 rounded-lg p-2 mb-2'>
-                    <Text className='text-gray-600 mb-1'>Anggota:</Text>
+                <View className='p-2 mb-2 border-2 border-gray-300 rounded-lg'>
+                    <Text className='mb-1 text-gray-600'>Anggota:</Text>
                     {proker.anggota.map((anggota, index) => (
-                        <View key={index} className='flex-row justify between items-center mb-1'>
+                        <View key={index} className='flex-row items-center mb-1 justify between'>
                             <Text className='text-gray-500'>{index + 1}. {anggota}</Text>
                             {isEditing && (
                                 <Pressable onPress={() => removeAnggota(index)}>
@@ -118,9 +118,9 @@ const DetailProkerScreen = () => {
                                 value={newAnggota}
                                 onChangeText={setNewAnggota}
                                 placeholder='Nama Anggota Baru'
-                                className='border-b-2 border-gray-300 flex-1 mr-2'
+                                className='flex-1 mr-2 border-b-2 border-gray-300'
                             />
-                            <Pressable className='bg-green-500 p-2 rounded-lg' onPress={addAnggota}>
+                            <Pressable className='p-2 bg-green-500 rounded-lg' onPress={addAnggota}>
                                 <Text className='text-white'>Tambah</Text>
                             </Pressable>
                         </View>
@@ -128,26 +128,53 @@ const DetailProkerScreen = () => {
                 </View>
 
                 {/* Tombol Aksi */}
-                <View className='flex-row justify-between mt-4'>
+                <View className='flex-row justify-between pb-3 mt-4 border-b-2 border-gray-300 b-3'>
                     {isEditing ? (
                         <>
-                            <Pressable className='bg-green-500 p-2 rounded-lg flex-1 mr-2' onPress={handleSave}>
-                                <Text className='text-white text-center'>Simpan</Text>
+                            <Pressable className='flex-1 p-2 mr-2 bg-green-500 rounded-lg' onPress={handleSave}>
+                                <Text className='text-center text-white'>Simpan</Text>
                             </Pressable>
-                            <Pressable className='bg-gray-500 p-2 rounded-lg flex-1 ml-2' onPress={() => setIsEditing(false)}>
-                                <Text className='text-white text-center'>Batal</Text>
+                            <Pressable className='flex-1 p-2 ml-2 bg-gray-500 rounded-lg' onPress={() => setIsEditing(false)}>
+                                <Text className='text-center text-white'>Batal</Text>
                             </Pressable>
                         </>
                     ) : (
                         <>
-                            <Pressable className='bg-blue-500 p-2 rounded-lg flex-1 mr-2' onPress={() => setIsEditing(true)}>
-                                <Text className='text-white text-center'>Edit Proker</Text>
+                            <Pressable className='flex-1 p-2 mr-2 bg-blue-500 rounded-lg' onPress={() => setIsEditing(true)}>
+                                <Text className='text-center text-white'>Edit Proker</Text>
                             </Pressable>
-                            <Pressable className='bg-red-500 p-2 rounded-lg flex-1 ml-2' onPress={handleDelete}>
-                                <Text className='text-white text-center'>Hapus Proker</Text>
+                            <Pressable className='flex-1 p-2 ml-2 bg-red-500 rounded-lg' onPress={handleDelete}>
+                                <Text className='text-center text-white'>Hapus Proker</Text>
                             </Pressable>
                         </>
                     )}
+                </View>
+                
+                {/* {Daftar Divisi} */}
+                <View className='mt-5'>
+                    <Text className = 'text-xl text-center font-pbold'>
+                        Daftar Divisi
+                    </Text>
+                    <TouchableOpacity className = 'p-2 mt-4 bg-green-400 rounded-lg'>
+                        <Text className = 'text-center text-white font-pregular'>
+                            Divisi Acara
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity className = 'p-2 mt-4 bg-green-400 rounded-lg'>
+                        <Text className = 'text-center text-white font-pregular'>
+                            Divisi Acara
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity className = 'p-2 mt-4 bg-green-400 rounded-lg'>
+                        <Text className = 'text-center text-white font-pregular'>
+                            Divisi Acara
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity className = 'p-2 mt-4 bg-green-400 rounded-lg'>
+                        <Text className = 'text-center text-white font-pregular'>
+                            Divisi Acara
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ScrollView>
