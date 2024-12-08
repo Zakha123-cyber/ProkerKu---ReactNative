@@ -3,10 +3,10 @@ import React from "react";
 import images from "../constants/images";
 import { Link } from "expo-router";
 
-const CardProker = () => {
+const CardProker = ( { FolderTujuan, PageTujuan } ) => {
   return (
     <View className="mx-2 mt-3">
-      <Link href="/dashboard/ketum/detailProker" asChild>
+      <Link href={`/dashboard/${FolderTujuan}/${PageTujuan}`} asChild>
         <TouchableOpacity className="flex-row p-6 mb-6 bg-white border-2 border-green-500 rounded-lg shadow-md">
           <View>
             <Image source={images.logoProkerKu} style={{ width: 150, height: 100, transform: [{ translateX: 30 }] }} resizeMode="contain" />
