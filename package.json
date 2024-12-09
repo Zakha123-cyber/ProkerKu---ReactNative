@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@firebase/component": "^0.6.11",
     "expo": "~51.0.39",
     "expo-constants": "~16.0.2",
     "expo-image-picker": "~15.0.7",
