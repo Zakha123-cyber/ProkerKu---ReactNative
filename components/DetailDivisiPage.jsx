@@ -90,12 +90,12 @@ const DetailDivisiPage = () => {
           )}
         </View>
         <View className="pb-3 mx-6 mt-10 rounded-lg">
-          <Text className="text-3xl text-center text-gray-600 font-pextrabold">JOBDESK</Text>
+          <Text className="text-3xl text-center text-green-600 font-pextrabold">JOBDESK</Text>
         </View>
+
+        {/* {LIST JOBDESK} */}
+        <ListJobdeskProker />
       </View>
-      
-      {/* {LIST JOBDESK} */}
-      <ListJobdeskProker/>
     </ScrollView>
   );
 };

@@ -6,7 +6,7 @@ import HomeAnggota from "../dashboard/anggota/HomeAnggota";
 import HomeCoDivisi from "../dashboard/co/HomeCoDivisi";
 
 const home = () => {
-  return <HomeKetum />;
+  return <HomeAnggota />;
 };
 
 export default home;

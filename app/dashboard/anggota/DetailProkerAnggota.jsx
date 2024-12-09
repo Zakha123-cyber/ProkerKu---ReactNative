@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, Image, ScrollView, Pressable, TextInput, Alert, TouchableOpacity } from "react-native";
+import CardDetailDivisi from "../../../components/CardDivisiProker";
 
 const DetailProkerAnggota = () => {
   // Data statis untuk proker
@@ -124,20 +125,9 @@ const DetailProkerAnggota = () => {
         </View>
 
         {/* {Daftar Divisi} */}
+        {/* {Daftar Divisi} */}
         <View className="mt-5">
-          <Text className="text-xl text-center font-pbold">Daftar Divisi</Text>
-          <TouchableOpacity className="p-2 mt-4 bg-green-400 rounded-lg">
-            <Text className="text-center text-white font-pregular">Divisi Acara</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="p-2 mt-4 bg-green-400 rounded-lg">
-            <Text className="text-center text-white font-pregular">Divisi Acara</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="p-2 mt-4 bg-green-400 rounded-lg">
-            <Text className="text-center text-white font-pregular">Divisi Acara</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="p-2 mt-4 bg-green-400 rounded-lg">
-            <Text className="text-center text-white font-pregular">Divisi Acara</Text>
-          </TouchableOpacity>
+          <CardDetailDivisi FolderTujuan={"anggota"} PageTujuan={"DetailDivisiAnggota"} />
         </View>
       </View>
     </ScrollView>
