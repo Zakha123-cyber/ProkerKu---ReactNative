@@ -125,7 +125,6 @@ const DetailProkerAnggota = () => {
         </View>
 
         {/* {Daftar Divisi} */}
-        {/* {Daftar Divisi} */}
         <View className="mt-5">
           <CardDetailDivisi FolderTujuan={"anggota"} PageTujuan={"DetailDivisiAnggota"} />
         </View>
