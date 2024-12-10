@@ -6,7 +6,7 @@ import HomeAnggotaNavigator from "../dashboard/anggota/HomeAnggotaNavigator";
 
 
 const home = () => {
-  return <HomeKetuaProkerNavigator />;
+  return <HomeKetumNavigator />;
 };
 
 export default home;
