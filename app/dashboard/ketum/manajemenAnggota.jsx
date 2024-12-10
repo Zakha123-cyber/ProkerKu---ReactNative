@@ -4,11 +4,20 @@ import { useRouter } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { db } from "../../../firebaseConfig"; // Pastikan path relatif benar
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  query,
+  where,
+} from "firebase/firestore";
 
 const MemberDisplayScreen = () => {
   const router = useRouter();
   const [members, setMembers] = useState([]);
+  const [divisiList, setDivisiList] = useState([]);
+  const [detailKepengurusan, setDetailKepengurusan] = useState([]);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -24,50 +33,102 @@ const MemberDisplayScreen = () => {
       }
     };
 
+    const fetchDivisi = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          collection(db, "divisi_organisasi")
+        );
+        const divisiList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setDivisiList(divisiList);
+      } catch (error) {
+        console.error("Error fetching divisi: ", error);
+      }
+    };
+
+    const fetchDetailKepengurusan = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          collection(db, "detail_kepengurusan")
+        );
+        const detailList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setDetailKepengurusan(detailList);
+      } catch (error) {
+        console.error("Error fetching detail kepengurusan: ", error);
+      }
+    };
+
     fetchMembers();
+    fetchDivisi();
+    fetchDetailKepengurusan();
   }, []);
 
-  const handleDelete = (id) => {
-    Alert.alert(
-      "Hapus Anggota",
-      "Apakah Anda yakin ingin menghapus anggota ini?",
-      [
-        {
-          text: "Batal",
-          style: "cancel",
-        },
-        {
-          text: "Hapus",
-          onPress: async () => {
-            try {
-              await deleteDoc(doc(db, "users", id));
-              setMembers((prevMembers) =>
-                prevMembers.filter((member) => member.id !== id)
-              );
-              alert("Anggota berhasil dihapus!");
-            } catch (error) {
-              console.error("Error deleting member: ", error);
-              alert("Terjadi kesalahan saat menghapus anggota.");
-            }
-          },
-        },
-      ]
+ const handleDelete = (id) => {
+   Alert.alert(
+     "Hapus Anggota",
+     "Apakah Anda yakin ingin menghapus anggota ini?",
+     [
+       {
+         text: "Batal",
+         style: "cancel",
+       },
+       {
+         text: "Hapus",
+         onPress: async () => {
+           try {
+             const detailQuery = query(
+               collection(db, "detail_kepengurusan"),
+               where("id_user", "==", id)
+             );
+             const detailSnapshot = await getDocs(detailQuery);
+             const deletePromises = detailSnapshot.docs.map((doc) =>
+               deleteDoc(doc.ref)
+             );
+             await Promise.all(deletePromises);
+
+             
+             await deleteDoc(doc(db, "users", id));
+
+             setMembers((prevMembers) =>
+               prevMembers.filter((member) => member.id !== id)
+             );
+             alert("Anggota berhasil dihapus!");
+           } catch (error) {
+             console.error("Error deleting member: ", error);
+             alert("Terjadi kesalahan saat menghapus anggota.");
+           }
+         },
+       },
+     ]
+   );
+ };
+
+  const renderMember = ({ item }) => {
+    const detail = detailKepengurusan.find(
+      (detail) => detail.id_user === item.id_user
+    );
+    const divisi = divisiList.find(
+      (divisi) => divisi.id_divisi === detail?.divisi_id
+    );
+
+    return (
+      <View className="flex-row items-center justify-between p-4 mb-4 bg-white rounded-lg shadow-md">
+        <View className="flex-1">
+          <Text className="text-lg font-bold">{item.nama}</Text>
+          <Text className="text-gray-600 text-md">{item.nim}</Text>
+          <Text className="text-gray-600 text-md">{divisi?.nama_divisi}</Text>
+        </View>
+        <TouchableOpacity onPress={() => handleDelete(item.id)}>
+          <AntDesign name="delete" size={24} color="red" />
+        </TouchableOpacity>
+      </View>
     );
   };
-
-  const renderMember = ({ item }) => (
-    <View className="flex-row items-center justify-between p-4 mb-4 bg-white rounded-lg shadow-md">
-      <View className="flex-1">
-        <Text className="text-lg font-bold">{item.nama}</Text>
-        <Text className="text-gray-600 text-md">{item.nim}</Text>
-        <Text className="mt-1 text-sm text-gray-500">{item.email}</Text>
-        <Text className="mt-1 text-sm text-gray-500">{item.angkatan}</Text>
-      </View>
-      <TouchableOpacity onPress={() => handleDelete(item.id)}>
-        <AntDesign name="delete" size={24} color="red" />
-      </TouchableOpacity>
-    </View>
-  );
 
   return (
     <View className="flex-1 p-4 bg-gray-100">

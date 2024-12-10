@@ -219,7 +219,7 @@ const TambahAnggota = ({ currentUserRole }) => {
                   <Picker.Item label="Pilih Divisi" value={null} />
                   {divisiList.map((divisi) => (
                     <Picker.Item
-                      key={divisi.id_divisi}
+                      key={divisi.id_divisi} // Tambahkan key yang unik di sini
                       label={divisi.nama_divisi}
                       value={divisi.id_divisi}
                     />
@@ -232,7 +232,7 @@ const TambahAnggota = ({ currentUserRole }) => {
             onPress={handleAddMember}
             className="items-center p-3 mt-6 bg-green-500 rounded-lg"
           >
-            <Text className="text-white font-pmedium">Tambah</Text>
+            <Text className="text-lg font-bold text-white">Tambah Anggota</Text>
           </TouchableOpacity>
         </View>
       </View>
