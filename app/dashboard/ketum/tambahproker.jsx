@@ -1,92 +1,132 @@
+import React, { useState } from "react";
 import {
+  SafeAreaView,
   View,
   Text,
   TextInput,
-  Button,
-  Image,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import * as ImagePicker from "expo-image-picker";
+import { db } from "../../../firebaseConfig"; // Pastikan path relatif benar
+import { collection, addDoc, doc, runTransaction } from "firebase/firestore";
 
 const TambahProker = () => {
-  const [image, setImage] = useState(null);
+  const [nama_proker, setNamaProker] = useState("");
+  const [deskripsi_proker, setDeskripsiProker] = useState("");
+  const [tanggal_pelaksanaan, setTanggalPelaksanaan] = useState("");
+  const [gambar, setGambar] = useState("");
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const handleAddProker = async () => {
+    if (
+      nama_proker.trim() === "" ||
+      deskripsi_proker.trim() === "" ||
+      tanggal_pelaksanaan.trim() === "" ||
+      gambar.trim() === ""
+    ) {
+      alert("Semua field harus diisi.");
+      return;
+    }
 
-    if (!result.canceled) {
-      setImage(result.uri);
+    try {
+      const newId = await runTransaction(db, async (transaction) => {
+        const counterDoc = doc(db, "counters", "proker");
+        const counterSnapshot = await transaction.get(counterDoc);
+
+        if (!counterSnapshot.exists()) {
+          throw new Error("Counter document does not exist!");
+        }
+
+        const newId = counterSnapshot.data().id_proker + 1;
+        transaction.update(counterDoc, { id_proker: newId });
+
+        return newId;
+      });
+
+      await addDoc(collection(db, "proker"), {
+        id_proker: newId,
+        nama_proker,
+        deskripsi_proker,
+        tanggal_pelaksanaan,
+        gambar,
+      });
+
+      alert("Proker berhasil ditambahkan!");
+      setNamaProker("");
+      setDeskripsiProker("");
+      setTanggalPelaksanaan("");
+      setGambar("");
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      alert("Terjadi kesalahan saat menambahkan proker.");
     }
   };
 
   return (
     <SafeAreaView className="flex-1 bg-green-200">
-      <View className="flex-1 justify-center items-center">
-        <View className="w-11/12 bg-white p-6 rounded-lg border-2 border-green-500">
+      <View className="items-center justify-center flex-1">
+        <View className="w-11/12 p-6 bg-white border-2 border-green-500 rounded-lg">
           <View className="mb-6">
-            <Text className="mb-4 text-sm text-green-500 font-pmedium">
-              Tambah Program Kerja
-            </Text>
             <Text
-              className="text-2xl text-green-500 font-pextrabold"
+              className="text-2xl text-center text-green-500 font-extrabold"
               style={{ fontSize: 25 }}
             >
-              Formulir
+              Tambah Program Kerja
             </Text>
           </View>
           <View className="space-y-4">
             <View>
-              <Text className="text-sm text-green-500 font-pmedium">
-                Nama Program Kerja:
+              <Text className="text-sm text-green-500 font-medium">
+                Nama Proker:
               </Text>
               <TextInput
-                className="mt-2 p-2 bg-gray-300 text-white rounded border border-green-500"
-                placeholder="Masukkan nama program kerja"
+                className="p-2 mt-2 text-black bg-gray-300 border border-green-500 rounded"
+                placeholder="Masukkan nama proker"
                 placeholderTextColor="#888"
+                value={nama_proker}
+                onChangeText={setNamaProker}
               />
             </View>
             <View>
-              <Text className="text-sm text-green-500 font-pmedium">
-                Deskripsi:
+              <Text className="text-sm text-green-500 font-medium">
+                Deskripsi Proker:
               </Text>
               <TextInput
-                className="mt-2 p-2 bg-gray-300 text-white rounded border border-green-500"
+                className="p-2 mt-2 text-black bg-gray-300 border border-green-500 rounded"
                 placeholder="Masukkan deskripsi"
                 placeholderTextColor="#888"
-                multiline
-                numberOfLines={4}
+                value={deskripsi_proker}
+                onChangeText={setDeskripsiProker}
               />
             </View>
             <View>
-              <Text className="text-sm text-green-500 font-pmedium">
-                Unggah Gambar:
+              <Text className="text-sm text-green-500 font-medium">
+                Tanggal Pelaksanaan:
               </Text>
-              <TouchableOpacity
-                onPress={pickImage}
-                className="mt-2 p-2 bg-gray-300 text-white rounded border border-green-500"
-              >
-                <Text className="text-white">Pilih Gambar</Text>
-              </TouchableOpacity>
-              {image && (
-                <Image
-                  source={{ uri: image }}
-                  style={{ width: 200, height: 200, marginTop: 10 }}
-                />
-              )}
+              <TextInput
+                className="p-2 mt-2 text-black bg-gray-300 border border-green-500 rounded"
+                placeholder="YYYY-MM-DD"
+                placeholderTextColor="#888"
+                value={tanggal_pelaksanaan}
+                onChangeText={setTanggalPelaksanaan}
+              />
+            </View>
+            <View>
+              <Text className="text-sm text-green-500 font-medium">
+                Gambar (URL):
+              </Text>
+              <TextInput
+                className="p-2 mt-2 text-black bg-gray-300 border border-green-500 rounded"
+                placeholder="Masukkan URL gambar"
+                placeholderTextColor="#888"
+                value={gambar}
+                onChangeText={setGambar}
+              />
             </View>
           </View>
           <TouchableOpacity
-            onPress={() => {}}
-            className="mt-6 p-3 bg-green-500 rounded-lg items-center"
+            onPress={handleAddProker}
+            className="items-center p-3 mt-6 bg-green-500 rounded-lg"
           >
-            <Text className="text-white font-pmedium">Tambah</Text>
+            <Text className="text-white font-medium">Tambah</Text>
           </TouchableOpacity>
         </View>
       </View>
