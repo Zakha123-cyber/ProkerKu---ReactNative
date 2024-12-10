@@ -35,7 +35,7 @@ const HomeAnggota = () => {
         <View className="flex-row justify-center gap-10 pb-2 mx-3 my-3 border-b-2 border-gray-300">
           <Text>HomeAnggota</Text>
         </View>
-        <CardProker FolderTujuan ={"anggota"} PageTujuan={"DetailProkerAnggota"}/>
+        <CardProker Tujuan = {"DetailProkerAnggota"} />
       </View>
     </SafeAreaView>
   );

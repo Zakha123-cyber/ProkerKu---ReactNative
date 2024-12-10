@@ -36,7 +36,7 @@ const Home = () => {
           <TambahProker />
           <ManagemenUser />
         </View>
-        <CardProker FolderTujuan={"ketum"} PageTujuan="DetailProkerKetum" />
+        <CardProker Tujuan = {"DetailProkerKetum"} />
       </View>
     </SafeAreaView>
   );
