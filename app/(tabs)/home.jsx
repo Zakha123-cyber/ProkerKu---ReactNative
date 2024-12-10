@@ -4,9 +4,10 @@ import HomeKetum from "../dashboard/ketum/HomeKetum";
 import HomeKetuaProker from "../dashboard/ketuaPro/HomeKetuaProker";
 import HomeAnggota from "../dashboard/anggota/HomeAnggota";
 import HomeCoDivisi from "../dashboard/co/HomeCoDivisi";
+import DetailProkerKetuaPro from "../dashboard/ketuaPro/DetailProkerKetuaPro"
 
 const home = () => {
-  return <HomeKetum/>;
+  return <DetailProkerKetuaPro/>;
 };
 
 export default home;
