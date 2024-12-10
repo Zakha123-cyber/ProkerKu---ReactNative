@@ -5,6 +5,7 @@ import HomeKetuaProker from "../dashboard/ketuaPro/HomeKetuaProker";
 import HomeAnggota from "../dashboard/anggota/HomeAnggota";
 import HomeCoDivisi from "../dashboard/co/HomeCoDivisi";
 import DetailProkerKetuaPro from "../dashboard/ketuaPro/DetailProkerKetuaPro"
+import HomeKetumNavigator from "../dashboard/ketum/HomeKetumNavigator";
 
 
 
