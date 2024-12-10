@@ -4,7 +4,7 @@ import HomeKetumNavigator from "../dashboard/ketum/HomeKetumNavigator";
 
 
 const home = () => {
-  return <HomeKetumNavigator/>;
+  return <HomeKetuaProkerNavigator />;
 };
 
 export default home;
