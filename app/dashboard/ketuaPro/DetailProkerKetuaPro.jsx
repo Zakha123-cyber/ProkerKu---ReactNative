@@ -13,31 +13,15 @@ import CardDetailDivisi from "../../../components/CardDivisiProker";
 import { Link } from "expo-router";
 import { icons } from "../../../constants";
 import TambahDivisi from "../../../components/TambahDivisi";
-import { useRoute } from "@react-navigation/native";
 
 const DetailProkerKetuaPro = () => {
-  const route = useRoute();
-  const { item } = route.params;
-
-  const formatDate = (timestamp) => {
-    if (!timestamp) return "Tanggal tidak tersedia";
-    const date = timestamp.toDate
-      ? timestamp.toDate()
-      : new Date(timestamp.seconds * 1000);
-    return date.toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
+  // Data statis untuk proker
   const initialProker = {
     image: "https://via.placeholder.com/400", // Ganti dengan URL gambar yang sesuai
     nama: item.nama_proker,
     timeline: formatDate(item.tanggal_pelaksanaan),
     ketua: "Budi Santoso",
-    anggota: [],
-    deskripsi: item.deskripsi_proker,
+    anggota: ["Siti Aminah", "Joko Widodo", "Rina Susanti"],
   };
 
   const [proker, setProker] = useState(initialProker);
@@ -179,6 +163,11 @@ const DetailProkerKetuaPro = () => {
           </Text>
         </View>
 
+        {/* Deskripsi Proker */}
+        <View className="p-2 mb-2 border-2 border-gray-300 rounded-lg">
+          {isEditing ? <TextInput value={proker.deskripsi} onChangeText={(text) => setProker({ ...proker, deskripsi: text })} className="text-gray-600" /> : <Text className="text-gray-600">Deskripsi Proker: {proker.deskripsi}</Text>}
+        </View>
+
         {/* Ketua */}
         <View className="p-2 mb-2 border-2 border-gray-300 rounded-lg">
           <Text className="text-gray-600">Ketua: {proker.ketua}</Text>
@@ -222,10 +211,7 @@ const DetailProkerKetuaPro = () => {
 
         {/* {Daftar Divisi} */}
         <View className="mt-5">
-          <CardDetailDivisi
-            FolderTujuan={"ketum"}
-            PageTujuan={"DetailDivisiKetum"}
-          />
+          <CardDetailDivisi FolderTujuan={"ketuaPro"} PageTujuan={"DetailDivisiKetuaPro"} />
         </View>
       </View>
 
