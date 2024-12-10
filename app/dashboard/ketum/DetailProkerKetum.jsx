@@ -6,13 +6,11 @@ import { useRoute } from "@react-navigation/native";
 
 const DetailProkerScreen = () => {
     const route = useRoute();
-    const { item } = route.params;
+    const { item } = route.params
 
       const formatDate = (timestamp) => {
         if (!timestamp) return "Tanggal tidak tersedia";
-        const date = timestamp.toDate
-          ? timestamp.toDate()
-          : new Date(timestamp.seconds * 1000);
+        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
         return date.toLocaleDateString("id-ID", {
           day: "2-digit",
           month: "long",
