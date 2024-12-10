@@ -42,7 +42,6 @@ const CardProker = ({ Tujuan }) => {
     <ScrollView>
       {prokerData.map(
         (item) => (
-          console.log(item),
           (
             <View key={item.id} className="mx-2 mt-3">
               <TouchableOpacity
