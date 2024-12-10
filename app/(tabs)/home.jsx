@@ -6,11 +6,12 @@ import HomeAnggota from "../dashboard/anggota/HomeAnggota";
 import HomeCoDivisi from "../dashboard/co/HomeCoDivisi";
 import DetailProkerKetuaPro from "../dashboard/ketuaPro/DetailProkerKetuaPro"
 import HomeKetumNavigator from "../dashboard/ketum/HomeKetumNavigator";
+import HomeKetuaProkerNavigator from "../dashboard/ketuaPro/HomeKetuaProNavigator";
 
 
 
 const home = () => {
-  return <HomeKetumNavigator/>;
+  return <HomeKetuaProkerNavigator/>;
 };
 
 export default home;

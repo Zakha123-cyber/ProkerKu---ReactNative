@@ -52,7 +52,9 @@ const CardProker = ({ Tujuan }) => {
                 <View>
                   <Image
                     source={{
-                      uri: item.logoUrl || "https://via.placeholder.com/80",
+                      uri:
+                        item.logoUrl ||
+                        "https://ilkom.unej.ac.id/wp-content/uploads/2022/06/HMIF-LOGO.png",
                     }} // Gambar fallback jika logoUrl kosong
                     style={{
                       width: 80,
@@ -62,7 +64,7 @@ const CardProker = ({ Tujuan }) => {
                     resizeMode="contain"
                   />
                 </View>
-                <View className="ml-4">
+                <View className="ml-4 justify-center">
                   <Text className="font-medium text-gray-400">
                     Nama Proker :
                   </Text>
