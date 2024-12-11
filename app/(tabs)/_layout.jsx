@@ -3,6 +3,7 @@ import React from "react";
 import { Tabs, Redirect } from "expo-router";
 import { icons } from "../../constants";
 
+
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
     <View className="flex items-center justify-center gap-2">
