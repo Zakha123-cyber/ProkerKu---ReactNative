@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, ScrollView, Pressable, TextInput, Alert, TouchableOpacity, Modal } from "react-native";
 import CardDetailDivisi from "../../../components/CardDivisiProker";
-import { Link } from "expo-router";
-import { icons } from "../../../constants";
-import TambahDivisi from "../../../components/TambahDivisi";
 import { useRoute } from "@react-navigation/native";
 import { collection, getDocs, query, where, addDoc, orderBy, limit } from "firebase/firestore";
 import { Picker } from "@react-native-picker/picker";
@@ -127,13 +124,13 @@ const DetailProkerKetuaPro = () => {
         setLoading(false);
       }
     };
-    
+
     fetchAnggota();
     getKetuaProker();
     fetchUsers();
     fetchDivisiProker();
   }, [item.id]);
-  
+
   if (loading) {
     return (
       <View className="items-center justify-center flex-1">
