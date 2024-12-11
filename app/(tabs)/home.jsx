@@ -5,7 +5,7 @@ import HomeCoDivisiNavigator from "../dashboard/co/HomeCoDivisiNavigator";
 import HomeAnggotaNavigator from "../dashboard/anggota/HomeAnggotaNavigator";
 
 const home = () => {
-  return <HomeAnggotaNavigator />;
+  return <HomeKetuaProkerNavigator />;
 };
 
 export default home;

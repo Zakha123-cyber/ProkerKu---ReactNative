@@ -43,11 +43,15 @@ const DetailProkerKetuaPro = () => {
   useEffect(() => {
     const fetchAnggota = async () => {
       try {
-        const q = query(collection(db, "detail_kepanitiaan_proker"), where("proker_id", "==", item.id));
+        const q = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker));
         const querySnapshot = await getDocs(q);
+        console.log("ID Proker:", item.id);
+        querySnapshot.forEach((doc) => {
+          console.log("doc.data().id_user:", doc.data().id_user); // Tampilkan id_user dari masing-masing dokumen
+        });
         const anggotaList = await Promise.all(
           querySnapshot.docs.map(async (doc) => {
-            const userDoc = await getDocs(query(collection(db, "users"), where("id", "==", doc.data().id_user)));
+            const userDoc = await getDocs(query(collection(db, "users"), where("id_user", "==", doc.data().id_user)));
             return userDoc.docs[0].data().nama;
           })
         );
@@ -55,6 +59,8 @@ const DetailProkerKetuaPro = () => {
           ...prevProker,
           anggota: anggotaList,
         }));
+
+        console.log("Anggota List:", anggotaList);
       } catch (error) {
         console.error("Error fetching anggota: ", error);
       }
@@ -98,7 +104,7 @@ const DetailProkerKetuaPro = () => {
         const q = query(collection(db, "users"), where("role_id", "==", 4));
         const querySnapshot = await getDocs(q);
         const usersList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
+          id: doc.data().id_user,
           nama: doc.data().nama,
         }));
         setUsersList(usersList);
@@ -166,9 +172,8 @@ const DetailProkerKetuaPro = () => {
 
       await addDoc(collection(db, "detail_kepanitiaan_proker"), {
         id_detail_kepanitiaan_proker: Number(lastId),
-        proker_id: Number(item.id),
+        id_proker: Number(item.id_proker),
         id_user: Number(selectedUser.id),
-        divisi_proker_id: null, // Sesuaikan dengan divisi_proker_id yang sesuai
       });
       setProker((prevProker) => ({
         ...prevProker,
@@ -216,18 +221,23 @@ const DetailProkerKetuaPro = () => {
         {/* Anggota */}
         <View className="p-2 mb-2 border-2 border-gray-300 rounded-lg">
           <Text className="mb-1 text-gray-600">Anggota:</Text>
-          {proker.anggota.map((anggota, index) => (
-            <View key={index} className="flex-row items-center justify-between mb-1">
-              <Text className="text-gray-500">
-                {index + 1}. {anggota}
-              </Text>
-              {isEditing && (
-                <Pressable onPress={() => removeAnggota(index)}>
-                  <Text className="text-red-500">Hapus</Text>
-                </Pressable>
-              )}
-            </View>
-          ))}
+          {proker.anggota.map(
+            (anggota, index) => (
+              console.log("ini anggota", anggota),
+              (
+                <View key={index} className="flex-row items-center justify-between mb-1">
+                  <Text className="text-gray-500">
+                    {index + 1}. {anggota}
+                  </Text>
+                  {isEditing && (
+                    <Pressable onPress={() => removeAnggota(index)}>
+                      <Text className="text-red-500">Hapus</Text>
+                    </Pressable>
+                  )}
+                </View>
+              )
+            )
+          )}
         </View>
 
         {/* Tombol Aksi */}
