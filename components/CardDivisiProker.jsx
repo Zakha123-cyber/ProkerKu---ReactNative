@@ -1,21 +1,18 @@
-import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
-import { Link } from "expo-router";
+import { View, Text, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const CardDivisiProker = ({ FolderTujuan, PageTujuan }) => {
+const CardDetailDivisi = ({PageTujuan, namaDivisi, deskripsiDivisi, idDivisi }) => {
+  const navigation = useNavigation();
+
   return (
-    <View>
-      {/* {Daftar Divisi} */}
-      <View className="mt-5">
-        <Text className="text-xl text-center font-pbold">Daftar Divisi</Text>
-        <Link href={`/dashboard/${FolderTujuan}/${PageTujuan}`} asChild>
-          <TouchableOpacity className="p-2 mt-4 bg-green-400 rounded-lg">
-            <Text className="text-center text-white font-pregular">Divisi Acara</Text>
-          </TouchableOpacity>
-        </Link>
-      </View>
-    </View>
+    <TouchableOpacity
+      className="p-4 mb-4 bg-green-400 shadow-md rounded-xl"
+      onPress={() => navigation.navigate(PageTujuan, { idDivisi })}
+    >
+      <Text className="text-lg text-center text-white font-pbold">{namaDivisi}</Text>
+    </TouchableOpacity>
   );
 };
 
-export default CardDivisiProker;
+export default CardDetailDivisi;
