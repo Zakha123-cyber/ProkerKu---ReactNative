@@ -29,7 +29,7 @@ const CardProker = ({ Tujuan }) => {
           id: doc.id,
           ...doc.data(),
         }));
-        setProkerData(data)
+        setProkerData(data);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -40,49 +40,31 @@ const CardProker = ({ Tujuan }) => {
 
   return (
     <ScrollView>
-      {prokerData.map(
-        (item) => (
-          console.log("ini item", item),
-          (
-            <View key={item.id} className="mx-2 mt-3">
-              <TouchableOpacity
-                onPress={() => navigation.navigate(Tujuan, { item })}
-                className="flex-row p-4 mb-4 bg-white border-2 border-green-500 rounded-lg shadow-md"
-              >
-                <View>
-                  <Image
-                    source={{
-                      uri:
-                        item.logoUrl ||
-                        "https://ilkom.unej.ac.id/wp-content/uploads/2022/06/HMIF-LOGO.png",
-                    }} // Gambar fallback jika logoUrl kosong
-                    style={{
-                      width: 80,
-                      height: 80,
-                      transform: [{ translateX: 10 }],
-                    }}
-                    resizeMode="contain"
-                  />
-                </View>
-                <View className="ml-4 justify-center">
-                  <Text className="font-medium text-gray-400">
-                    Nama Proker :
-                  </Text>
-                  <Text className="text-lg font-bold">
-                    {item.nama_proker || "Tidak tersedia"}
-                  </Text>
-                  <Text className="mt-2 font-medium text-gray-400">
-                    Tanggal Pelaksanaan :
-                  </Text>
-                  <Text className="text-lg font-bold">
-                    {formatDate(item.tanggal_pelaksanaan)}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+      {prokerData.map((item) => (
+        <View key={item.id} className="mx-2 mt-3">
+          <TouchableOpacity onPress={() => navigation.navigate(Tujuan, { item })} className="flex-row p-4 mb-4 bg-white border-2 border-green-500 rounded-lg shadow-md">
+            <View>
+              <Image
+                source={{
+                  uri: item.logoUrl || "https://ilkom.unej.ac.id/wp-content/uploads/2022/06/HMIF-LOGO.png",
+                }} // Gambar fallback jika logoUrl kosong
+                style={{
+                  width: 80,
+                  height: 80,
+                  transform: [{ translateX: 10 }],
+                }}
+                resizeMode="contain"
+              />
             </View>
-          )
-        )
-      )}
+            <View className="justify-center ml-4">
+              <Text className="font-medium text-gray-400">Nama Proker :</Text>
+              <Text className="text-lg font-bold">{item.nama_proker || "Tidak tersedia"}</Text>
+              <Text className="mt-2 font-medium text-gray-400">Tanggal Pelaksanaan :</Text>
+              <Text className="text-lg font-bold">{formatDate(item.tanggal_pelaksanaan)}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      ))}
     </ScrollView>
   );
 };

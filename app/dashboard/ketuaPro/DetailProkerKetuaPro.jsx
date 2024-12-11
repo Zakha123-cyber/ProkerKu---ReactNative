@@ -256,6 +256,7 @@ const DetailProkerKetuaPro = () => {
                 namaDivisi={divisi.nama_divisi}
                 deskripsiDivisi={divisi.deskripsi_divisi}
                 idDivisi={divisi.id_divisi_proker} // Kirim data tambahan jika diperlukan
+                idProker={idProker}
               />
             ))
           ) : (
