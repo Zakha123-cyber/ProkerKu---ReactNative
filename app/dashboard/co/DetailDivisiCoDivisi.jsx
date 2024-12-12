@@ -2,7 +2,6 @@ import { View, ScrollView, Text } from "react-native";
 import React from "react";
 import { useRoute } from "@react-navigation/native";
 import DetailDivisiPageCo from "../../../components/DetailDivisiPageCo";
-import TambahJobs from "../../../components/IconTambahJobs";
 
 const DetailDivisiCoDivisi = () => {
   const route = useRoute();
@@ -20,7 +19,6 @@ const DetailDivisiCoDivisi = () => {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <DetailDivisiPageCo idDivisi={idDivisi} idProker={idProker} deskripsiDivisi={deskripsiDivisi} />
-      <TambahJobs idProker={idProker} idDivisi={idDivisi} />
     </ScrollView>
   );
 };

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
 import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
 import ListJobdeskProker from "./ListJobdeskCo";
+import TambahJobs from "../components/IconTambahJobs";
 
 const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
   console.log("ID Divisi:", idDivisi);
@@ -124,14 +125,6 @@ const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
               )}
             </View>
           ))}
-          {isEditing && (
-            <View className="flex-row mb-4">
-              <TextInput value={newAnggota} onChangeText={setNewAnggota} placeholder="Nama Anggota Baru" className="flex-1 mr-2 border-b-2 border-gray-300" />
-              <Pressable className="p-2 bg-green-500 rounded-lg" onPress={addAnggota}>
-                <Text className="text-white">Tambah</Text>
-              </Pressable>
-            </View>
-          )}
         </View>
 
         {/* Jobdesk */}
@@ -139,6 +132,7 @@ const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
           <Text className="text-3xl text-center text-green-600 font-pextrabold">JOBDESK</Text>
         </View>
         <ListJobdeskProker idProker={idProker} idDivisi={idDivisi}/>
+        <TambahJobs idProker={idProker} idDivisi={idDivisi} />
       </View>
     </ScrollView>
   );

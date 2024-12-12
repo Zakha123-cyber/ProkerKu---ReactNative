@@ -18,7 +18,7 @@ const TambahJobs = ({ idProker, idDivisi }) => {
         }
       >
         <Image source={icons.plus} className="w-5 h-5" resizeMode="contain" />
-        <Text className="text-center text-gray-400 font-pregular">Tambah Divisi</Text>
+        <Text className="text-center text-gray-400 font-pregular">Tambah Jobs</Text>
       </TouchableOpacity>
     </View>
   );
