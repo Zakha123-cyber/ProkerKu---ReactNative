@@ -2,9 +2,9 @@ import { View, Text, ScrollView, TextInput, Alert, Pressable, ActivityIndicator 
 import React, { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
 import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
-import ListJobdeskProker from "./ListJobdesk";
+import ListJobdeskProker from "./ListJobdeskCo";
 
-const DetailDivisiPage = ({ idDivisi, idProker, deskripsiDivisi }) => {
+const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
   console.log("ID Divisi:", idDivisi);
   console.log("ID Proker:", idProker);
   console.log("Deskripsi Divisi:", deskripsiDivisi);
@@ -144,4 +144,4 @@ const DetailDivisiPage = ({ idDivisi, idProker, deskripsiDivisi }) => {
   );
 };
 
-export default DetailDivisiPage;
+export default DetailDivisiPageCo;
