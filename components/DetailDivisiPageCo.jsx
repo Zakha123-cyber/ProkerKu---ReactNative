@@ -134,6 +134,7 @@ const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
         <ListJobdeskProker idProker={idProker} idDivisi={idDivisi}/>
         <TambahJobs idProker={idProker} idDivisi={idDivisi} />
       </View>
+      <TambahJobs idProker={idProker} idDivisi={idDivisi} />
     </ScrollView>
   );
 };

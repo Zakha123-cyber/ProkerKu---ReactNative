@@ -9,6 +9,7 @@ import { db } from "../../../firebaseConfig";
 const DetailProkerScreen = () => {
   const route = useRoute();
   const { item } = route.params;
+  const idProker = item.id_proker;
 
   const formatDate = (timestamp) => {
     if (!timestamp) return "Tanggal tidak tersedia";
@@ -21,7 +22,7 @@ const DetailProkerScreen = () => {
   };
 
   const initialProker = {
-    image: item.gambar, // Ganti dengan URL gambar yang sesuai
+    image: "https://via.placeholder.com/400", // Ganti dengan URL gambar yang sesuai
     nama: item.nama_proker,
     timeline: formatDate(item.tanggal_pelaksanaan),
     ketua: "",
@@ -35,15 +36,21 @@ const DetailProkerScreen = () => {
   const [anggotaList, setAnggotaList] = useState([]);
   const [usersList, setUsersList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [divisiProker, setDivisiProker] = useState([]); // State untuk menyimpan data divisi
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAnggota = async () => {
       try {
-        const q = query(collection(db, "detail_kepanitiaan_proker"), where("proker_id", "==", item.id));
+        const q = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker));
         const querySnapshot = await getDocs(q);
+        console.log("ID Proker:", item.id);
+        querySnapshot.forEach((doc) => {
+          console.log("doc.data().id_user:", doc.data().id_user); // Tampilkan id_user dari masing-masing dokumen
+        });
         const anggotaList = await Promise.all(
           querySnapshot.docs.map(async (doc) => {
-            const userDoc = await getDocs(query(collection(db, "users"), where("id", "==", doc.data().id_user)));
+            const userDoc = await getDocs(query(collection(db, "users"), where("id_user", "==", doc.data().id_user)));
             return userDoc.docs[0].data().nama;
           })
         );
@@ -51,32 +58,30 @@ const DetailProkerScreen = () => {
           ...prevProker,
           anggota: anggotaList,
         }));
+
+        console.log("Anggota List:", anggotaList);
       } catch (error) {
         console.error("Error fetching anggota: ", error);
       }
     };
-    
+
     const getKetuaProker = async () => {
       try {
         // Query untuk mendapatkan detail_kepanitiaan_proker dengan proker_id dan jabatan "Ketua Proker"
-        const detailQuery = query(
-          collection(db, "detail_kepanitiaan_proker"),
-          where("id_proker", "==", item.id_proker),
-          where("jabatan", "==", "Ketua Proker")
-        );
+        const detailQuery = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker), where("jabatan", "==", "Ketua Proker"));
         const detailSnapshot = await getDocs(detailQuery);
-  
+
         if (!detailSnapshot.empty) {
           // Ambil id_user dari dokumen yang ditemukan
           const idUser = detailSnapshot.docs[0].data().id_user;
-  
+
           // Query ke koleksi users untuk mendapatkan nama pengguna berdasarkan id_user
           const userQuery = query(collection(db, "users"), where("id_user", "==", idUser));
           const userSnapshot = await getDocs(userQuery);
-  
+
           if (!userSnapshot.empty) {
             const ketuaNama = userSnapshot.docs[0].data().nama;
-  
+
             // Set nama Ketua Proker ke state proker
             setProker((prevProker) => ({
               ...prevProker,
@@ -98,7 +103,7 @@ const DetailProkerScreen = () => {
         const q = query(collection(db, "users"), where("role_id", "==", 4));
         const querySnapshot = await getDocs(q);
         const usersList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
+          id: doc.data().id_user,
           nama: doc.data().nama,
         }));
         setUsersList(usersList);
@@ -107,10 +112,37 @@ const DetailProkerScreen = () => {
       }
     };
 
+    const fetchDivisiProker = async () => {
+      try {
+        const q = query(collection(db, "divisi_proker"), where("id_proker", "==", idProker));
+
+        const querySnapshot = await getDocs(q);
+        const divisiList = querySnapshot.docs.map((doc) => ({
+          id: doc.id, // ID dokumen
+          ...doc.data(), // Data dokumen
+        }));
+
+        setDivisiProker(divisiList);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching divisi_proker: ", error);
+        setLoading(false);
+      }
+    };
+
     fetchAnggota();
     getKetuaProker();
     fetchUsers();
+    fetchDivisiProker();
   }, [item.id]);
+
+  if (loading) {
+    return (
+      <View className="items-center justify-center flex-1">
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   const handleDelete = () => {
     Alert.alert("Hapus Proker", "Apakah Anda yakin ingin menghapus proker ini?", [
@@ -139,9 +171,8 @@ const DetailProkerScreen = () => {
 
       await addDoc(collection(db, "detail_kepanitiaan_proker"), {
         id_detail_kepanitiaan_proker: Number(lastId),
-        proker_id: Number(item.id),
+        id_proker: Number(item.id_proker),
         id_user: Number(selectedUser.id),
-        divisi_proker_id: null, // Sesuaikan dengan divisi_proker_id yang sesuai
       });
       setProker((prevProker) => ({
         ...prevProker,
@@ -161,14 +192,12 @@ const DetailProkerScreen = () => {
     });
   };
 
-
-
   return (
     <ScrollView className="flex-1 p-4 bg-white">
       {/* Pembungkus dengan garis hijau */}
       <View className="p-4 border-2 border-green-500 rounded-lg">
         {/* Gambar Proker */}
-        <Image source={{ uri: proker.gambar || "https://via.placeholder.com/400" }} className="w-full mb-4 rounded-lg h-60" resizeMode="cover" />
+        <Image source={{ uri: proker.image }} className="w-full mb-4 rounded-lg h-60" resizeMode="cover" />
 
         {/* Nama Proker */}
         <Text className="mb-2 text-2xl font-bold">{proker.nama}</Text>
@@ -191,33 +220,45 @@ const DetailProkerScreen = () => {
         {/* Anggota */}
         <View className="p-2 mb-2 border-2 border-gray-300 rounded-lg">
           <Text className="mb-1 text-gray-600">Anggota:</Text>
-          {proker.anggota.map((anggota, index) => (
-            <View key={index} className="flex-row items-center justify-between mb-1">
-              <Text className="text-gray-500">
-                {index + 1}. {anggota}
-              </Text>
-              {isEditing && (
-                <Pressable onPress={() => removeAnggota(index)}>
-                  <Text className="text-red-500">Hapus</Text>
-                </Pressable>
-              )}
-            </View>
-          ))}
+          {proker.anggota.map(
+            (anggota, index) => (
+              console.log("ini anggota", anggota),
+              (
+                <View key={index} className="flex-row items-center justify-between mb-1">
+                  <Text className="text-gray-500">
+                    {index + 1}. {anggota}
+                  </Text>
+                  {isEditing && (
+                    <Pressable onPress={() => removeAnggota(index)}>
+                      <Text className="text-red-500">Hapus</Text>
+                    </Pressable>
+                  )}
+                </View>
+              )
+            )
+          )}
         </View>
 
-        {/* Tombol Aksi */}
-        <View className="flex-row justify-between pb-3 mt-4 border-b-2 border-gray-300">
-          <Pressable className="flex-1 p-2 mr-2 bg-blue-500 rounded-lg" onPress={() => setModalVisible(true)}>
-            <Text className="text-center text-white">Edit Proker</Text>
-          </Pressable>
-          <Pressable className="flex-1 p-2 ml-2 bg-red-500 rounded-lg" onPress={handleDelete}>
-            <Text className="text-center text-white">Hapus Proker</Text>
-          </Pressable>
-        </View>
 
         {/* {Daftar Divisi} */}
         <View className="mt-5">
-          <CardDetailDivisi FolderTujuan={"ketum"} PageTujuan={"DetailDivisiKetum"} />
+          <Text className="text-2xl text-center text-green-400 font-pbold">Daftar Divisi</Text>
+        </View>
+        <View className="mt-5">
+          {divisiProker.length > 0 ? (
+            divisiProker.map((divisi) => (
+              <CardDetailDivisi
+                key={divisi.id}
+                PageTujuan={"DetailDivisiKetum"}
+                namaDivisi={divisi.nama_divisi}
+                deskripsiDivisi={divisi.deskripsi_divisi}
+                idDivisi={divisi.id_divisi_proker} // Kirim data tambahan jika diperlukan
+                idProker={idProker}
+              />
+            ))
+          ) : (
+            <Text className="text-center text-gray-500">Tidak ada divisi.</Text>
+          )}
         </View>
       </View>
 
