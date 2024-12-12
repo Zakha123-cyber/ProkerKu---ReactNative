@@ -1,16 +1,19 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import images from "../../constants/images"; // Pastikan path relatif benar
+import { useRouter } from "expo-router";
 
 const Profile = () => {
+  const router = useRouter();
   const handleLogout = () => {
-    // ini nanti be
+    router.replace('sign-in');
+    // Fix Sign Out
     alert("Logout berhasil!");
   };
 
   return (
     <View className="flex-1 items-center justify-center bg-white p-4">
-      
+
       <Image
         source={images.logoProker}
         className="absolute top-4 right-4 w-20 h-20"
