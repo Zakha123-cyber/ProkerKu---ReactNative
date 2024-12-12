@@ -21,7 +21,7 @@ const DetailProkerScreen = () => {
   };
 
   const initialProker = {
-    image: "https://via.placeholder.com/400", // Ganti dengan URL gambar yang sesuai
+    image: item.gambar, // Ganti dengan URL gambar yang sesuai
     nama: item.nama_proker,
     timeline: formatDate(item.tanggal_pelaksanaan),
     ketua: "",
@@ -161,12 +161,14 @@ const DetailProkerScreen = () => {
     });
   };
 
+
+
   return (
     <ScrollView className="flex-1 p-4 bg-white">
       {/* Pembungkus dengan garis hijau */}
       <View className="p-4 border-2 border-green-500 rounded-lg">
         {/* Gambar Proker */}
-        <Image source={{ uri: proker.image }} className="w-full mb-4 rounded-lg h-60" resizeMode="cover" />
+        <Image source={{ uri: proker.gambar || "https://via.placeholder.com/400" }} className="w-full mb-4 rounded-lg h-60" resizeMode="cover" />
 
         {/* Nama Proker */}
         <Text className="mb-2 text-2xl font-bold">{proker.nama}</Text>

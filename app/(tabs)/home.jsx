@@ -4,8 +4,23 @@ import HomeKetuaProkerNavigator from "../dashboard/ketuaPro/HomeKetuaProNavigato
 import HomeCoDivisiNavigator from "../dashboard/co/HomeCoDivisiNavigator";
 import HomeAnggotaNavigator from "../dashboard/anggota/HomeAnggotaNavigator";
 
-const home = () => {
-  return <HomeCoDivisiNavigator />;
+const Home = ({ role_id }) => {
+  const renderNavigator = () => {
+    switch (role_id) {
+      case 1:
+        return <HomeKetumNavigator />;
+      case 2:
+        return <HomeKetuaProkerNavigator />;
+      case 3:
+        return <HomeCoDivisiNavigator />;
+      case 4:
+        return <HomeAnggotaNavigator />;
+      default:
+        return <Text>Invalid role</Text>;
+    }
+  };
+
+  return <>{renderNavigator()}</>;
 };
 
-export default home;
+export default Home;

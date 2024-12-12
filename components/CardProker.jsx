@@ -41,12 +41,13 @@ const CardProker = ({ Tujuan }) => {
   return (
     <ScrollView>
       {prokerData.map((item) => (
+        console.log(item),
         <View key={item.id} className="mx-2 mt-3">
           <TouchableOpacity onPress={() => navigation.navigate(Tujuan, { item })} className="flex-row p-4 mb-4 bg-white border-2 border-green-500 rounded-lg shadow-md">
             <View>
               <Image
                 source={{
-                  uri: item.logoUrl || "https://ilkom.unej.ac.id/wp-content/uploads/2022/06/HMIF-LOGO.png",
+                  uri: item.gambar || "https://ilkom.unej.ac.id/wp-content/uploads/2022/06/HMIF-LOGO.png",
                 }} // Gambar fallback jika logoUrl kosong
                 style={{
                   width: 80,
