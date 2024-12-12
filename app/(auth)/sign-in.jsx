@@ -34,6 +34,7 @@ const SignIn = () => {
         console.log("User data:", userData);
 
         setRoleId(userData.role_id);
+        handleclick(userData.role_id);
       } else {
         Alert.alert("Login Failed", "Invalid email or password.");
       }
@@ -43,9 +44,16 @@ const SignIn = () => {
     }
   };
 
-  // if (roleId !== null) {
+  // if (roleId != null) {
   //   return <Home role_id={roleId} />;
   // }
+
+  function handleclick(roleId) {
+    if (roleId) {
+      router.push({ pathname: "/home", params: { role_id: roleId } });
+      // console.log("Role ID: ", roleId);
+    }
+  };
 
   return (
     <View className="items-center justify-center flex-1 bg-white">
@@ -76,7 +84,7 @@ const SignIn = () => {
       {/* Login Button */}
       <TouchableOpacity
         className="items-center w-4/5 p-4 mb-6 bg-green-400 rounded-lg"
-        onPress={() => router.push("/home")}
+        onPress={handleLogin}
       >
         <Text className="font-bold text-white">Login</Text>
       </TouchableOpacity>
