@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
 import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
 import ListJobdeskProker from "./ListJobdeskCo";
+import TambahJobs from "../components/IconTambahJobs";
 
 const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
   console.log("ID Divisi:", idDivisi);
@@ -138,8 +139,9 @@ const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
         <View className="pb-3 mx-6 mt-10 rounded-lg">
           <Text className="text-3xl text-center text-green-600 font-pextrabold">JOBDESK</Text>
         </View>
-        <ListJobdeskProker idProker={idProker} idDivisi={idDivisi}/>
+        <ListJobdeskProker idProker={idProker} idDivisi={idDivisi} />
       </View>
+      <TambahJobs idProker={idProker} idDivisi={idDivisi} />
     </ScrollView>
   );
 };

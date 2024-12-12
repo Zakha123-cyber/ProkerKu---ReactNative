@@ -7,6 +7,8 @@ import "../../global.css";
 import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import Home from "../(tabs)/home";
+import { router } from "expo-router";
+
 
 const SignIn = () => {
   const [form, setForm] = useState({
@@ -41,9 +43,9 @@ const SignIn = () => {
     }
   };
 
-  if (roleId !== null) {
-    return <Home role_id={roleId} />;
-  }
+  // if (roleId !== null) {
+  //   return <Home role_id={roleId} />;
+  // }
 
   return (
     <View className="items-center justify-center flex-1 bg-white">
@@ -74,7 +76,7 @@ const SignIn = () => {
       {/* Login Button */}
       <TouchableOpacity
         className="items-center w-4/5 p-4 mb-6 bg-green-400 rounded-lg"
-        onPress={handleLogin}
+        onPress={() => router.push("/home")}
       >
         <Text className="font-bold text-white">Login</Text>
       </TouchableOpacity>

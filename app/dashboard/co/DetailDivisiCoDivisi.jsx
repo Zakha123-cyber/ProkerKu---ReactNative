@@ -20,7 +20,6 @@ const DetailDivisiCoDivisi = () => {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <DetailDivisiPageCo idDivisi={idDivisi} idProker={idProker} deskripsiDivisi={deskripsiDivisi} />
-      <TambahJobs idProker={idProker} idDivisi={idDivisi} />
     </ScrollView>
   );
 };
