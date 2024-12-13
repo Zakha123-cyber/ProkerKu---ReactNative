@@ -6,15 +6,18 @@ import SearchInput from "../../../components/SearchInput";
 import TambahProker from "../../../components/IconTambahProker";
 import ManagemenUser from "../../../components/IconManagementUser";
 import CardProker from "../../../components/CardProker";
+import { useRoute } from "@react-navigation/native";
 
 const HomeCoDivisi = () => {
+  const route = useRoute();
+  const { role_id, nama, id_user } = route.params || {};
   const renderHeader = () => (
     <View className="px-4 my-6 space-y-6 bg-green-400">
       <View className="flex-row items-center justify-between mb-6">
         <View>
           <Text className="mt-2 mb-2 text-lg text-white font-pmedium">Selamat Datang</Text>
           <Text className="text-2xl text-white font-pextrabold" style={{ fontSize: 25 }}>
-            Mas Ahnaf
+            {nama}
           </Text>
           <Text className="text-2xl text-white font-pregular" style={{ fontSize: 15 }}>
             Divisi Litbang
@@ -35,7 +38,7 @@ const HomeCoDivisi = () => {
         <View className="flex-row justify-center gap-10 pb-2 mx-3 my-3 border-b-2 border-gray-300">
           <Text>Home CO Divisi</Text>
         </View>
-        <CardProker Tujuan = {"DetailProkerCoDivisi"} />
+        <CardProker Tujuan={"DetailProkerCoDivisi"} />
       </View>
     </SafeAreaView>
   );

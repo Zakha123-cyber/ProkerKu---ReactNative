@@ -8,7 +8,11 @@ import DetailDivisiKetum from "./DetailDivisiKetum";
 const Stack = createNativeStackNavigator();
 
 
-const HomeKetumNavigator = () => {
+const HomeKetumNavigator = ({ route }) => {
+  const { role_id, nama, id_user } = route.params;
+  console.log("Role ID: ", role_id) // Ambil parameter dari Home
+  console.log("Nama : ", nama) // Ambil parameter dari Home
+
   return (
     <Stack.Navigator>
       <Stack.Screen name="HomeKetum" component={HomeKetum} options={{ headerShown: false }} />

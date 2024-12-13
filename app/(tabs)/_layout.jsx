@@ -2,9 +2,13 @@ import { Image, View, Text } from "react-native";
 import React from "react";
 import { Tabs, Redirect } from "expo-router";
 import { icons } from "../../constants";
-
+import { useLocalSearchParams } from "expo-router";
 
 const TabIcon = ({ icon, color, name, focused }) => {
+  const { role_id, nama, id_user } = useLocalSearchParams(); // Ambil parameter dari router.push
+  console.log("passing data 1", role_id);
+  console.log("passing data 2", nama);
+
   return (
     <View className="flex items-center justify-center gap-2">
       <Image source={icon} resizeMode="contain" tintColor={color} className="h-7 w-7" />

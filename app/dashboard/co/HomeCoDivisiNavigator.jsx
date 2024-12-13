@@ -9,10 +9,11 @@ import TambahJobs from "../co/TambahJobs";
 const Stack = createNativeStackNavigator();
 
 
-const HomeKetuaProNavigator = () => {
+const HomeKetuaProNavigator = ( { route } ) => {
+  const { role_id, nama, id_user } = route.params;
   return (
     <Stack.Navigator>
-      <Stack.Screen name="HomeCoDivisi" component={HomeCoDivisi} options={{ headerShown: false }} />
+      <Stack.Screen name="HomeCoDivisi" component={HomeCoDivisi} options={{ headerShown: false }} initialParams={{ role_id, nama, id_user }} />
       <Stack.Screen name="DetailProkerCoDivisi" component={DetailProkerCoDivisi} options={{ headerShown: false }} />
       <Stack.Screen name="DetailDivisiCoDivisi" component={DetalDivisiCoDivisi} options={{ headerShown: false }} />
       <Stack.Screen name="TambahJobs" component={TambahJobs} options={{ headerShown: false }} />
