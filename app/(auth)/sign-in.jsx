@@ -6,9 +6,9 @@ import { db } from "../../firebaseConfig"; // Pastikan path relatif benar
 import "../../global.css";
 import { images } from "../../constants";
 import FormField from "../../components/FormField";
-import Home from "../(tabs)/home";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
+import { useUser } from "../../context/UserContext";
 
 const SignIn = () => {
   const [form, setForm] = useState({
@@ -17,6 +17,7 @@ const SignIn = () => {
   });
   const [roleId, setRoleId] = useState(null);
   const navigation = useNavigation();
+  const { setUser } = useUser(); // Ambil setUser dari context
 
   const handleLogin = async () => {
     try {
@@ -26,11 +27,52 @@ const SignIn = () => {
       if (!querySnapshot.empty) {
         const userDoc = querySnapshot.docs[0];
         const userData = userDoc.data();
-        // Simpan data pengguna ke state atau context global jika diperlukan
         console.log("User data:", userData);
 
-        setRoleId(userData.role_id);
-        handleclick(userData.role_id, userData.nama, userData.id_user);
+        // Query untuk mendapatkan id_divisi dari detail_kepengurusan
+        const kepengurusanQuery = query(collection(db, "detail_kepengurusan"), where("id_user", "==", userData.id_user));
+        const kepengurusanSnapshot = await getDocs(kepengurusanQuery);
+
+        if (!kepengurusanSnapshot.empty) {
+          const kepengurusanDoc = kepengurusanSnapshot.docs[0];
+          const id_divisi = kepengurusanDoc.data().divisi_id;
+
+          // Query untuk mendapatkan nama divisi dari divisi_organisasi
+          const divisiQuery = query(collection(db, "divisi_organisasi"), where("id_divisi", "==", id_divisi));
+          const divisiSnapshot = await getDocs(divisiQuery);
+
+          if (!divisiSnapshot.empty) {
+            const divisiDoc = divisiSnapshot.docs[0];
+            const namaDivisi = divisiDoc.data().nama_divisi;
+
+            // Simpan data ke context dengan nama divisi
+            setUser({
+              role_id: userData.role_id,
+              nama: userData.nama,
+              id_user: userData.id_user,
+              email: userData.email,
+              nim: userData.nim,
+              divisi: namaDivisi, // Tambahkan nama divisi
+            });
+
+            console.log("User Context Updated:", {
+              role_id: userData.role_id,
+              nama: userData.nama,
+              id_user: userData.id_user,
+              email: userData.email,
+              nim: userData.nim,
+              divisi: namaDivisi,
+            });
+
+            // Lanjutkan navigasi
+            setRoleId(userData.role_id);
+            handleclick(userData.role_id, userData.nama, userData.id_user);
+          } else {
+            Alert.alert("Error", "Divisi tidak ditemukan.");
+          }
+        } else {
+          Alert.alert("Error", "Detail kepengurusan tidak ditemukan.");
+        }
       } else {
         Alert.alert("Login Failed", "Invalid email or password.");
       }
@@ -42,7 +84,7 @@ const SignIn = () => {
 
   function handleclick(roleId, nama, id_user) {
     if (roleId) {
-      router.push({ pathname: "/home", params: { role_id: roleId, nama : nama, id_user : id_user } });
+      router.push({ pathname: "/home", params: { role_id: roleId, nama: nama, id_user: id_user } });
       // console.log("Role ID: ", roleId);
     }
   }

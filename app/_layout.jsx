@@ -2,6 +2,7 @@ import { View, Text } from "react-native";
 import React, { useEffect } from "react";
 import { Slot, Stack, SplashScreen } from "expo-router";
 import { useFonts } from "expo-font";
+import { UserProvider } from "../context/UserContext"; // Import UserProvider
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,11 +36,13 @@ const RootLayout = () => {
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-    </Stack>
+    <UserProvider>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      </Stack>
+    </UserProvider>
   );
 };
 

@@ -5,10 +5,6 @@ import { icons } from "../../constants";
 import { useLocalSearchParams } from "expo-router";
 
 const TabIcon = ({ icon, color, name, focused }) => {
-  const { role_id, nama, id_user } = useLocalSearchParams(); // Ambil parameter dari router.push
-  console.log("passing data 1", role_id);
-  console.log("passing data 2", nama);
-
   return (
     <View className="flex items-center justify-center gap-2">
       <Image source={icon} resizeMode="contain" tintColor={color} className="h-7 w-7" />
@@ -20,6 +16,9 @@ const TabIcon = ({ icon, color, name, focused }) => {
 };
 
 const TabsLayout = () => {
+  const { role_id, nama, id_user } = useLocalSearchParams(); // Ambil parameter dari router.push
+  console.log("passing data 1", role_id);
+  console.log("passing data 2", nama);
   return (
     <>
       <Tabs
@@ -50,6 +49,7 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => <TabIcon icon={icons.profile} color={color} name="Profile" focused={focused} />,
           }}
+          initialParams={{ role_id, nama, id_user }} // Pass parameter ke profile
         />
       </Tabs>
     </>
