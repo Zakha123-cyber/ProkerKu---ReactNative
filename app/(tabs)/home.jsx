@@ -21,7 +21,7 @@ const Home = () => {
   // };
 
   // return <>{renderNavigator()}</>;
-  return <HomeAnggotaNavigator />;
+  return <HomeCoDivisiNavigator />;
 };
 
 export default Home;

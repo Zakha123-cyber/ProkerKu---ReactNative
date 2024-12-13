@@ -7,7 +7,7 @@ import { Picker } from "@react-native-picker/picker";
 import { db } from "../../../firebaseConfig";
 import TambahDivisiProker from "../../../components/IconTambahDivisi";
 
-const DetailProkerCoDivisi = () => {
+const DetailProkerKetuaPro = () => {
   const route = useRoute();
   const { item } = route.params;
   const idProker = item.id_proker;
@@ -43,11 +43,15 @@ const DetailProkerCoDivisi = () => {
   useEffect(() => {
     const fetchAnggota = async () => {
       try {
-        const q = query(collection(db, "detail_kepanitiaan_proker"), where("proker_id", "==", item.id));
+        const q = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker));
         const querySnapshot = await getDocs(q);
+        console.log("ID Proker:", item.id);
+        querySnapshot.forEach((doc) => {
+          console.log("doc.data().id_user:", doc.data().id_user); // Tampilkan id_user dari masing-masing dokumen
+        });
         const anggotaList = await Promise.all(
           querySnapshot.docs.map(async (doc) => {
-            const userDoc = await getDocs(query(collection(db, "users"), where("id", "==", doc.data().id_user)));
+            const userDoc = await getDocs(query(collection(db, "users"), where("id_user", "==", doc.data().id_user)));
             return userDoc.docs[0].data().nama;
           })
         );
@@ -55,6 +59,8 @@ const DetailProkerCoDivisi = () => {
           ...prevProker,
           anggota: anggotaList,
         }));
+
+        console.log("Anggota List:", anggotaList);
       } catch (error) {
         console.error("Error fetching anggota: ", error);
       }
@@ -98,7 +104,7 @@ const DetailProkerCoDivisi = () => {
         const q = query(collection(db, "users"), where("role_id", "==", 4));
         const querySnapshot = await getDocs(q);
         const usersList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
+          id: doc.data().id_user,
           nama: doc.data().nama,
         }));
         setUsersList(usersList);
@@ -166,9 +172,8 @@ const DetailProkerCoDivisi = () => {
 
       await addDoc(collection(db, "detail_kepanitiaan_proker"), {
         id_detail_kepanitiaan_proker: Number(lastId),
-        proker_id: Number(item.id),
+        id_proker: Number(item.id_proker),
         id_user: Number(selectedUser.id),
-        divisi_proker_id: null, // Sesuaikan dengan divisi_proker_id yang sesuai
       });
       setProker((prevProker) => ({
         ...prevProker,
@@ -216,28 +221,23 @@ const DetailProkerCoDivisi = () => {
         {/* Anggota */}
         <View className="p-2 mb-2 border-2 border-gray-300 rounded-lg">
           <Text className="mb-1 text-gray-600">Anggota:</Text>
-          {proker.anggota.map((anggota, index) => (
-            <View key={index} className="flex-row items-center justify-between mb-1">
-              <Text className="text-gray-500">
-                {index + 1}. {anggota}
-              </Text>
-              {isEditing && (
-                <Pressable onPress={() => removeAnggota(index)}>
-                  <Text className="text-red-500">Hapus</Text>
-                </Pressable>
-              )}
-            </View>
-          ))}
-        </View>
-
-        {/* Tombol Aksi */}
-        <View className="flex-row justify-between pb-3 mt-4 border-b-2 border-gray-300">
-          <Pressable className="flex-1 p-2 mr-2 bg-blue-500 rounded-lg" onPress={() => setModalVisible(true)}>
-            <Text className="text-center text-white">Edit Proker</Text>
-          </Pressable>
-          <Pressable className="flex-1 p-2 ml-2 bg-red-500 rounded-lg" onPress={handleDelete}>
-            <Text className="text-center text-white">Hapus Proker</Text>
-          </Pressable>
+          {proker.anggota.map(
+            (anggota, index) => (
+              console.log("ini anggota", anggota),
+              (
+                <View key={index} className="flex-row items-center justify-between mb-1">
+                  <Text className="text-gray-500">
+                    {index + 1}. {anggota}
+                  </Text>
+                  {isEditing && (
+                    <Pressable onPress={() => removeAnggota(index)}>
+                      <Text className="text-red-500">Hapus</Text>
+                    </Pressable>
+                  )}
+                </View>
+              )
+            )
+          )}
         </View>
 
         {/* {Daftar Divisi} */}
@@ -261,195 +261,8 @@ const DetailProkerCoDivisi = () => {
           )}
         </View>
       </View>
-
-      {/* Modal untuk mengedit proker */}
-      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          <View
-            style={{
-              width: "90%",
-              padding: 20,
-              backgroundColor: "white",
-              borderRadius: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "bold",
-                marginBottom: 20,
-              }}
-            >
-              Edit Proker
-            </Text>
-            <TextInput
-              value={proker.nama}
-              onChangeText={(text) => setProker({ ...proker, nama: text })}
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: "gray",
-                marginBottom: 20,
-                fontSize: 16,
-                padding: 5,
-              }}
-            />
-            <TextInput
-              value={proker.timeline}
-              onChangeText={(text) => setProker({ ...proker, timeline: text })}
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: "gray",
-                marginBottom: 20,
-                fontSize: 16,
-                padding: 5,
-              }}
-            />
-            <TextInput
-              value={proker.deskripsi}
-              onChangeText={(text) => setProker({ ...proker, deskripsi: text })}
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: "gray",
-                marginBottom: 20,
-                fontSize: 16,
-                padding: 5,
-              }}
-            />
-            <TextInput
-              value={proker.ketua}
-              onChangeText={(text) => setProker({ ...proker, ketua: text })}
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: "gray",
-                marginBottom: 20,
-                fontSize: 16,
-                padding: 5,
-              }}
-            />
-            <Text
-              style={{
-                fontSize: 16,
-                marginBottom: 10,
-              }}
-            >
-              Anggota:
-            </Text>
-            {proker.anggota.map((anggota, index) => (
-              <View
-                key={index}
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 16,
-                  }}
-                >
-                  {index + 1}. {anggota}
-                </Text>
-                <Pressable onPress={() => removeAnggota(index)}>
-                  <Text
-                    style={{
-                      color: "red",
-                    }}
-                  >
-                    Hapus
-                  </Text>
-                </Pressable>
-              </View>
-            ))}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: 20,
-              }}
-            >
-              <Picker
-                selectedValue={newAnggota}
-                onValueChange={(itemValue) => setNewAnggota(itemValue)}
-                style={{
-                  flex: 1,
-                  borderBottomWidth: 1,
-                  borderBottomColor: "gray",
-                }}
-              >
-                <Picker.Item label="Pilih Anggota" value="" />
-                {usersList.map((user) => (
-                  <Picker.Item key={user.id} label={user.nama} value={user.id} />
-                ))}
-              </Picker>
-              <Pressable
-                style={{
-                  backgroundColor: "green",
-                  padding: 10,
-                  borderRadius: 5,
-                  marginLeft: 10,
-                }}
-                onPress={addAnggota}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                  }}
-                >
-                  Tambah
-                </Text>
-              </Pressable>
-            </View>
-            <Pressable
-              style={{
-                backgroundColor: "green",
-                padding: 15,
-                borderRadius: 5,
-                marginBottom: 10,
-              }}
-              onPress={handleSave}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  textAlign: "center",
-                  fontSize: 16,
-                }}
-              >
-                Simpan
-              </Text>
-            </Pressable>
-            <Pressable
-              style={{
-                backgroundColor: "gray",
-                padding: 15,
-                borderRadius: 5,
-              }}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  textAlign: "center",
-                  fontSize: 16,
-                }}
-              >
-                Batal
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
     </ScrollView>
   );
 };
 
-export default DetailProkerCoDivisi;
+export default DetailProkerKetuaPro;

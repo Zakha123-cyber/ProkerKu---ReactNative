@@ -1,33 +1,28 @@
-import { View, Text, ScrollView, TextInput, Alert, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, ScrollView, Alert, Pressable, ActivityIndicator, Modal, Button } from "react-native";
 import React, { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
-import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
-import ListJobdeskProker from "./ListJobdesk";
+import { collection, getDocs, query, where, doc, updateDoc, arrayUnion, getDoc, setDoc } from "firebase/firestore";
+import ListJobdeskProker from "./ListJobdeskCo";
+import TambahJobs from "../components/IconTambahJobs";
+import { Picker } from '@react-native-picker/picker';
 
-const DetailDivisiPage = ({ idDivisi, idProker, deskripsiDivisi }) => {
-  console.log("ID Divisi:", idDivisi);
-  console.log("ID Proker:", idProker);
-  console.log("Deskripsi Divisi:", deskripsiDivisi);
+const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
   const [userData, setUserData] = useState(null); // Data user CO Divisi
   const [loading, setLoading] = useState(true); // Indikator loading
-  const [proker, setProker] = useState({
-    nama: "Pengembangan Aplikasi Mobile",
-    timeline: "1 Januari 2023 - 31 Maret 2023",
-    ketua: "Budi Santoso",
-    anggota: ["Siti Aminah", "Joko Widodo", "Rina Susanti"],
-  });
-  const [isEditing, setIsEditing] = useState(false);
-  const [newAnggota, setNewAnggota] = useState("");
+  const [anggotaDivisi, setAnggotaDivisi] = useState([]); // Menyimpan daftar anggota divisi
+  const [usersList, setUsersList] = useState([]); // Menyimpan daftar user yang tersedia
+  const [selectedUser, setSelectedUser] = useState(null); // User yang dipilih dari dropdown
+  const [showModal, setShowModal] = useState(false); // Menampilkan modal untuk tambah anggota
   const [namaDivisi, setNamaDivisi] = useState(""); // Nama Divisi
 
-  // Fetch data CO Divisi
+  // Fetch data CO Divisi dan anggota divisi
   useEffect(() => {
     const fetchData = async () => {
       try {
         const divisiProkerRef = collection(db, "divisi_proker");
         const divisiQuery = query(divisiProkerRef, where("id_proker", "==", idProker), where("id_divisi_proker", "==", idDivisi));
-
         const divisiSnapshot = await getDocs(divisiQuery);
+
         if (divisiSnapshot.empty) {
           console.error("Divisi Proker tidak ditemukan");
           setLoading(false);
@@ -36,31 +31,58 @@ const DetailDivisiPage = ({ idDivisi, idProker, deskripsiDivisi }) => {
 
         const divisiData = divisiSnapshot.docs[0].data();
         const coDivisiId = divisiData.co_divisi;
-        const fetchedNamaDivisi = divisiData.nama_divisi;
+        setNamaDivisi(divisiData.nama_divisi || "Nama divisi tidak tersedia");
 
-        setNamaDivisi(fetchedNamaDivisi || "Nama divisi tidak tersedia");
+        // Fetch anggota divisi
+        const anggotaQuery = query(
+          collection(db, "detail_kepanitiaan_proker"),
+          where("id_divisi_proker", "==", idDivisi)
+        );
+        const anggotaSnapshot = await getDocs(anggotaQuery);
 
-        console.log("Data Divisi Proker:", divisiData);
-        console.log("ID CO Divisi:", coDivisiId);
-        console.log("Nama Divisi:", fetchedNamaDivisi);
+        const anggotaIds = anggotaSnapshot.docs.map((doc) => doc.data().id_user);
+        console.log("Daftar id_user anggota:", anggotaIds);
 
-        if (!coDivisiId) {
-          console.error("CO Divisi tidak ditemukan");
-          setLoading(false);
-          return;
-        }
+        if (anggotaIds.length > 0) {
+          const usersRef = collection(db, "users");
 
-        // Fetch data user berdasarkan ID CO Divisi
-        const usersRef = collection(db, "users");
-        const userQuery = query(usersRef, where("id_user", "==", coDivisiId));
-        const userSnapshot = await getDocs(userQuery);
+          // Ambil nama untuk setiap anggota
+          const anggotaNamaPromises = anggotaIds.map(async (id_user) => {
+            const userQuery = query(usersRef, where("id_user", "==", id_user));
+            const userSnapshot = await getDocs(userQuery);
+            if (!userSnapshot.empty) {
+              const userData = userSnapshot.docs[0].data();
+              console.log("Data user ditemukan:", userData);
+              return userData.nama || "Nama tidak tersedia";
+            } else {
+              console.warn(`User dengan id_user ${id_user} tidak ditemukan.`);
+              return "User tidak ditemukan";
+            }
+          });
 
-        if (!userSnapshot.empty) {
-          const userData = userSnapshot.docs[0].data(); // Ambil data user
-          setUserData(userData);
+          const anggotaNamaList = await Promise.all(anggotaNamaPromises);
+          console.log("Daftar nama anggota:", anggotaNamaList);
+          setAnggotaDivisi(anggotaNamaList);
         } else {
-          console.error("User tidak ditemukan");
+          console.log("Tidak ada anggota ditemukan untuk divisi ini.");
+          setAnggotaDivisi([]);
         }
+
+        // Fetch CO Divisi data
+        if (coDivisiId) {
+          const usersRef = collection(db, "users");
+          const coQuery = query(usersRef, where("id_user", "==", coDivisiId));
+          const coSnapshot = await getDocs(coQuery);
+          if (!coSnapshot.empty) {
+            setUserData(coSnapshot.docs[0].data());
+          } else {
+            console.warn("CO Divisi tidak ditemukan");
+          }
+        }
+
+        // Fetch daftar user untuk dropdown
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        setUsersList(usersSnapshot.docs.map((doc) => doc.data()));
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -71,25 +93,43 @@ const DetailDivisiPage = ({ idDivisi, idProker, deskripsiDivisi }) => {
     fetchData();
   }, [idProker, idDivisi]);
 
-  // Fungsi untuk menambah anggota
-  const addAnggota = () => {
-    if (newAnggota.trim() === "") {
-      Alert.alert("Error", "Nama anggota tidak boleh kosong.");
-      return;
-    }
-    setProker((prevProker) => ({
-      ...prevProker,
-      anggota: [...prevProker.anggota, newAnggota],
-    }));
-    setNewAnggota("");
-  };
+  const handleAddAnggota = async () => {
+    if (selectedUser) {
+      try {
+        const countersRef = doc(db, "counters", "detail_kepanitiaan");
+        const countersSnap = await getDoc(countersRef);
 
-  // Fungsi untuk menghapus anggota
-  const removeAnggota = (index) => {
-    setProker((prevProker) => {
-      const updatedAnggota = prevProker.anggota.filter((_, i) => i !== index);
-      return { ...prevProker, anggota: updatedAnggota };
-    });
+        if (!countersSnap.exists()) {
+          console.error("Counter untuk detail_kepanitiaan tidak ditemukan.");
+          return;
+        }
+
+        const currentCounter = countersSnap.data().id_detail_kepanitiaan;
+        const newIdDetailKepanitiaanProker = currentCounter + 1;
+
+        await updateDoc(countersRef, { id_detail_kepanitiaan: newIdDetailKepanitiaanProker });
+
+        const anggotaRef = doc(db, "detail_kepanitiaan_proker", `${newIdDetailKepanitiaanProker}`);
+        const anggotaBaru = {
+          id_detail_kepanitiaan_proker: newIdDetailKepanitiaanProker,
+          id_divisi_proker: idDivisi,
+          id_proker: idProker,
+          id_user: selectedUser.id_user,
+          role_proker: "Anggota",
+        };
+
+        await setDoc(anggotaRef, anggotaBaru);
+        setAnggotaDivisi((prevAnggota) => [...prevAnggota, selectedUser.nama]);
+        setShowModal(false);
+        setSelectedUser(null);
+        Alert.alert("Sukses", "Anggota berhasil ditambahkan!");
+      } catch (error) {
+        console.error("Error adding anggota:", error);
+        Alert.alert("Error", "Gagal menambah anggota");
+      }
+    } else {
+      Alert.alert("Input tidak valid", "Pilih anggota yang valid");
+    }
   };
 
   if (loading) {
@@ -99,49 +139,47 @@ const DetailDivisiPage = ({ idDivisi, idProker, deskripsiDivisi }) => {
   return (
     <ScrollView className="flex-1 p-4 bg-white">
       <View className="p-4 border-2 rounded-lg">
-        <View className="pb-3 mx-6 rounded-lg">
-          <Text className="text-2xl text-center text-green-500 font-pextrabold">Detail Divisi</Text>
-          <Text className="text-3xl text-center text-gray-600 font-pextrabold">{namaDivisi}</Text>
-        </View>
+        <Text className="text-3xl text-center text-gray-600 font-pextrabold">{namaDivisi}</Text>
 
-        {/* CO Divisi */}
         <View className="p-2 mb-2 border-2 border-gray-300 rounded-lg">
           <Text className="text-gray-600">CO Divisi: {userData ? userData.nama : "Data tidak ditemukan"}</Text>
         </View>
 
-        {/* Anggota */}
         <View className="p-2 mb-2 border-2 border-gray-300 rounded-lg">
-          <Text className="mb-1 text-gray-600">Anggota:</Text>
-          {proker.anggota.map((anggota, index) => (
-            <View key={index} className="flex-row items-center justify-between mb-1">
-              <Text className="text-gray-500">
-                {index + 1}. {anggota}
-              </Text>
-              {isEditing && (
-                <Pressable onPress={() => removeAnggota(index)}>
-                  <Text className="text-red-500">Hapus</Text>
-                </Pressable>
-              )}
-            </View>
-          ))}
-          {isEditing && (
-            <View className="flex-row mb-4">
-              <TextInput value={newAnggota} onChangeText={setNewAnggota} placeholder="Nama Anggota Baru" className="flex-1 mr-2 border-b-2 border-gray-300" />
-              <Pressable className="p-2 bg-green-500 rounded-lg" onPress={addAnggota}>
-                <Text className="text-white">Tambah</Text>
-              </Pressable>
-            </View>
+          <Text className="text-gray-600 font-semibold">Anggota Divisi:</Text>
+          {anggotaDivisi.length > 0 ? (
+            anggotaDivisi.map((anggota, index) => (
+              <Text key={index} className="text-gray-500">{anggota}</Text>
+            ))
+          ) : (
+            <Text className="text-gray-500">Belum ada anggota.</Text>
           )}
         </View>
 
-        {/* Jobdesk */}
-        <View className="pb-3 mx-6 mt-10 rounded-lg">
-          <Text className="text-3xl text-center text-green-600 font-pextrabold">JOBDESK</Text>
-        </View>
-        <ListJobdeskProker idProker={idProker} idDivisi={idDivisi}/>
+        <Modal visible={showModal} animationType="slide" transparent={true}>
+          <View className="flex-1 justify-center items-center bg-gray-500 bg-opacity-50">
+            <View className="bg-white p-4 rounded-lg">
+              <Text className="text-xl font-semibold mb-3">Tambah Anggota</Text>
+              <Picker
+                selectedValue={selectedUser?.id_user}
+                onValueChange={(itemValue) => setSelectedUser(usersList.find((user) => user.id_user === itemValue))}
+                className="border-2 border-gray-300 rounded-lg p-2 mb-3"
+              >
+                <Picker.Item label="Pilih anggota..." value={null} />
+                {usersList.map((user) => (
+                  <Picker.Item key={user.id_user} label={user.nama} value={user.id_user} />
+                ))}
+              </Picker>
+              <Button title="Tambah" onPress={handleAddAnggota} />
+              <Button title="Batal" onPress={() => setShowModal(false)} color="red" />
+            </View>
+          </View>
+        </Modal>
+
+        <ListJobdeskProker idProker={idProker} idDivisi={idDivisi} />
       </View>
     </ScrollView>
   );
 };
 
-export default DetailDivisiPage;
+export default DetailDivisiPageCo;
