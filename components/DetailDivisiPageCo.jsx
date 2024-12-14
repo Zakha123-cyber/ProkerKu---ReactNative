@@ -4,7 +4,7 @@ import { db } from "../firebaseConfig";
 import { collection, getDocs, query, where, doc, updateDoc, arrayUnion, getDoc, setDoc } from "firebase/firestore";
 import ListJobdeskProker from "./ListJobdeskCo";
 import TambahJobs from "../components/IconTambahJobs";
-import { Picker } from '@react-native-picker/picker';
+import { Picker } from "@react-native-picker/picker";
 
 const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
   const [userData, setUserData] = useState(null); // Data user CO Divisi
@@ -34,13 +34,14 @@ const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
         setNamaDivisi(divisiData.nama_divisi || "Nama divisi tidak tersedia");
 
         // Fetch anggota divisi
-        const anggotaQuery = query(
-          collection(db, "detail_kepanitiaan_proker"),
-          where("id_divisi_proker", "==", idDivisi)
-        );
+        const anggotaQuery = query(collection(db, "detail_kepanitiaan_proker"), where("id_divisi_proker", "==", idDivisi));
         const anggotaSnapshot = await getDocs(anggotaQuery);
 
-        const anggotaIds = anggotaSnapshot.docs.map((doc) => doc.data().id_user);
+        const anggotaIds = anggotaSnapshot.docs
+          .map((doc) => doc.data())
+          .filter((data) => data.role_proker !== "Co Divisi") // Filter di sini
+          .map((data) => data.id_user);
+
         console.log("Daftar id_user anggota:", anggotaIds);
 
         if (anggotaIds.length > 0) {
@@ -146,29 +147,27 @@ const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
         </View>
 
         <View className="p-2 mb-2 border-2 border-gray-300 rounded-lg">
-          <Text className="text-gray-600 font-semibold">Anggota Divisi:</Text>
+          <Text className="font-semibold text-gray-600">Anggota Divisi:</Text>
           {anggotaDivisi.length > 0 ? (
             anggotaDivisi.map((anggota, index) => (
-              <Text key={index} className="text-gray-500">{anggota}</Text>
+              <Text key={index} className="text-gray-500">
+                {anggota}
+              </Text>
             ))
           ) : (
             <Text className="text-gray-500">Belum ada anggota.</Text>
           )}
         </View>
 
-        <Pressable onPress={() => setShowModal(true)} className="bg-green-500 p-3 rounded-lg">
-          <Text className="text-white text-center">Tambah Anggota</Text>
+        <Pressable onPress={() => setShowModal(true)} className="p-3 bg-green-500 rounded-lg">
+          <Text className="text-center text-white">Tambah Anggota</Text>
         </Pressable>
 
         <Modal visible={showModal} animationType="slide" transparent={true}>
-          <View className="flex-1 justify-center items-center bg-gray-500 bg-opacity-50">
-            <View className="bg-white p-4 rounded-lg">
-              <Text className="text-xl font-semibold mb-3">Tambah Anggota</Text>
-              <Picker
-                selectedValue={selectedUser?.id_user}
-                onValueChange={(itemValue) => setSelectedUser(usersList.find((user) => user.id_user === itemValue))}
-                className="border-2 border-gray-300 rounded-lg p-2 mb-3"
-              >
+          <View className="items-center justify-center flex-1 bg-gray-500 bg-opacity-50">
+            <View className="p-4 bg-white rounded-lg">
+              <Text className="mb-3 text-xl font-semibold">Tambah Anggota</Text>
+              <Picker selectedValue={selectedUser?.id_user} onValueChange={(itemValue) => setSelectedUser(usersList.find((user) => user.id_user === itemValue))} className="p-2 mb-3 border-2 border-gray-300 rounded-lg">
                 <Picker.Item label="Pilih anggota..." value={null} />
                 {usersList.map((user) => (
                   <Picker.Item key={user.id_user} label={user.nama} value={user.id_user} />

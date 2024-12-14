@@ -99,7 +99,7 @@ const TambahProker = () => {
         await addDoc(collection(db, "detail_kepanitiaan_proker"), {
           id_proker: newId,  // Using newId for 'id_proker'
           id_user: ketua_proker,  // Using 'id_user' selected in the Picker for 'id_user'
-          jabatan: "Ketua Proker",
+          role_proker: "Ketua Proker",
         });
       } catch (error) {
         console.error("Error adding to detail_kepanitiaan_proker:", error);
@@ -126,13 +126,13 @@ const TambahProker = () => {
     <SafeAreaView className="flex-1 bg-green-200">
       <View className="items-center justify-center flex-1">
         <View className="w-11/12 p-6 bg-white border-2 border-green-500 rounded-lg">
-          <Text className="text-2xl text-center text-green-500 font-extrabold mb-6">
+          <Text className="mb-6 text-2xl font-extrabold text-center text-green-500">
             Tambah Program Kerja
           </Text>
           <View className="space-y-4">
             {/* Nama Proker */}
             <View>
-              <Text className="text-sm text-green-500 font-medium">Nama Proker:</Text>
+              <Text className="text-sm font-medium text-green-500">Nama Proker:</Text>
               <TextInput
                 className="p-2 mt-2 text-black bg-gray-300 border border-green-500 rounded"
                 placeholder="Masukkan nama proker"
@@ -144,7 +144,7 @@ const TambahProker = () => {
 
             {/* Deskripsi Proker */}
             <View>
-              <Text className="text-sm text-green-500 font-medium">Deskripsi Proker:</Text>
+              <Text className="text-sm font-medium text-green-500">Deskripsi Proker:</Text>
               <TextInput
                 className="p-2 mt-2 text-black bg-gray-300 border border-green-500 rounded"
                 placeholder="Masukkan deskripsi"
@@ -156,7 +156,7 @@ const TambahProker = () => {
 
             {/* Tanggal Pelaksanaan */}
             <View>
-              <Text className="text-sm text-green-500 font-medium">Tanggal Pelaksanaan:</Text>
+              <Text className="text-sm font-medium text-green-500">Tanggal Pelaksanaan:</Text>
               <TouchableOpacity
                 onPress={() => setShowDatePicker(true)}
                 className="p-2 mt-2 bg-gray-300 border border-green-500 rounded"
@@ -182,7 +182,7 @@ const TambahProker = () => {
 
             {/* Gambar */}
             <View>
-              <Text className="text-sm text-green-500 font-medium">Gambar (URL):</Text>
+              <Text className="text-sm font-medium text-green-500">Gambar (URL):</Text>
               <TextInput
                 className="p-2 mt-2 text-black bg-gray-300 border border-green-500 rounded"
                 placeholder="Masukkan URL gambar"
@@ -194,7 +194,7 @@ const TambahProker = () => {
 
             {/* Ketua Proker */}
             <View>
-              <Text className="text-sm text-green-500 font-medium">Ketua Proker:</Text>
+              <Text className="text-sm font-medium text-green-500">Ketua Proker:</Text>
               <View className="p-2 mt-2 bg-gray-300 border border-green-500 rounded">
                 <Picker
                   selectedValue={formData.ketua_proker}
@@ -222,7 +222,7 @@ const TambahProker = () => {
             {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text className="text-white font-medium">Tambah</Text>
+              <Text className="font-medium text-white">Tambah</Text>
             )}
           </TouchableOpacity>
         </View>

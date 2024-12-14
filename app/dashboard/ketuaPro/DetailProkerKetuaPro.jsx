@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Image, ScrollView, Pressable, TextInput, Alert, TouchableOpacity, Modal } from "react-native";
 import CardDetailDivisi from "../../../components/CardDivisiProker";
 import { useRoute } from "@react-navigation/native";
-import { collection, getDocs, query, where, addDoc, orderBy, limit } from "firebase/firestore";
+import { doc, collection, getDocs, query, where, addDoc, orderBy, limit, deleteDoc } from "firebase/firestore";
 import { Picker } from "@react-native-picker/picker";
 import { db } from "../../../firebaseConfig";
 import TambahDivisiProker from "../../../components/IconTambahDivisi";
@@ -44,23 +44,36 @@ const DetailProkerKetuaPro = () => {
     const fetchAnggota = async () => {
       try {
         const q = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker));
+
         const querySnapshot = await getDocs(q);
-        console.log("ID Proker:", item.id);
-        querySnapshot.forEach((doc) => {
-          console.log("doc.data().id_user:", doc.data().id_user); // Tampilkan id_user dari masing-masing dokumen
-        });
+        console.log("ID Proker:", item.id_proker);
+
         const anggotaList = await Promise.all(
-          querySnapshot.docs.map(async (doc) => {
-            const userDoc = await getDocs(query(collection(db, "users"), where("id_user", "==", doc.data().id_user)));
-            return userDoc.docs[0].data().nama;
-          })
+          querySnapshot.docs
+            .filter((doc) => doc.data().role_proker !== "Ketua Proker") // Filter untuk mengecualikan "Ketua Proker"
+            .map(async (doc) => {
+              // Ambil data user berdasarkan id_user
+              const userSnapshot = await getDocs(query(collection(db, "users"), where("id_user", "==", doc.data().id_user)));
+
+              // Pastikan ada data user yang sesuai
+              if (!userSnapshot.empty) {
+                return userSnapshot.docs[0].data().nama; // Ambil nama user
+              }
+
+              return null; // Jika tidak ditemukan, kembalikan null
+            })
         );
+
+        // Hapus anggota yang bernilai null (data user tidak ditemukan)
+        const filteredAnggotaList = anggotaList.filter((nama) => nama !== null);
+
+        // Simpan anggota ke dalam state
         setProker((prevProker) => ({
           ...prevProker,
-          anggota: anggotaList,
+          anggota: filteredAnggotaList,
         }));
 
-        console.log("Anggota List:", anggotaList);
+        console.log("Anggota List:", filteredAnggotaList);
       } catch (error) {
         console.error("Error fetching anggota: ", error);
       }
@@ -69,7 +82,7 @@ const DetailProkerKetuaPro = () => {
     const getKetuaProker = async () => {
       try {
         // Query untuk mendapatkan detail_kepanitiaan_proker dengan proker_id dan jabatan "Ketua Proker"
-        const detailQuery = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker), where("jabatan", "==", "Ketua Proker"));
+        const detailQuery = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker), where("role_proker", "==", "Ketua Proker"));
         const detailSnapshot = await getDocs(detailQuery);
 
         if (!detailSnapshot.empty) {
@@ -145,10 +158,35 @@ const DetailProkerKetuaPro = () => {
     );
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     Alert.alert("Hapus Proker", "Apakah Anda yakin ingin menghapus proker ini?", [
       { text: "Batal", style: "cancel" },
-      { text: "Hapus", onPress: () => console.log("Proker dihapus") },
+      {
+        text: "Hapus",
+        onPress: async () => {
+          try {
+            // Hapus dokumen pada koleksi `proker` berdasarkan `id_proker`
+            const prokerQuery = query(collection(db, "proker"), where("id_proker", "==", idProker));
+
+            const querySnapshot = await getDocs(prokerQuery);
+
+            if (querySnapshot.empty) {
+              Alert.alert("Error", "Proker tidak ditemukan.");
+              return;
+            }
+
+            querySnapshot.forEach(async (docSnapshot) => {
+              console.log("Proker ID:", docSnapshot.id);
+              await deleteDoc(doc(db, "proker", docSnapshot.id));
+            });
+
+            Alert.alert("Sukses", "Proker berhasil dihapus!");
+          } catch (error) {
+            console.error("Error saat menghapus proker:", error);
+            Alert.alert("Error", "Gagal menghapus proker.");
+          }
+        },
+      },
     ]);
   };
 
@@ -245,9 +283,9 @@ const DetailProkerKetuaPro = () => {
           <Pressable className="flex-1 p-2 mr-2 bg-blue-500 rounded-lg" onPress={() => setModalVisible(true)}>
             <Text className="text-center text-white">Edit Proker</Text>
           </Pressable>
-          <Pressable className="flex-1 p-2 ml-2 bg-red-500 rounded-lg" onPress={handleDelete}>
+          {/* <Pressable className="flex-1 p-2 ml-2 bg-red-500 rounded-lg" onPress={handleDelete}>
             <Text className="text-center text-white">Hapus Proker</Text>
-          </Pressable>
+          </Pressable> */}
         </View>
 
         {/* {Daftar Divisi} */}

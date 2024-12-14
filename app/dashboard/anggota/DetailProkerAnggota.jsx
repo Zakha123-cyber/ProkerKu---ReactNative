@@ -43,18 +43,37 @@ const DetailProkerAnggota = () => {
   useEffect(() => {
     const fetchAnggota = async () => {
       try {
-        const q = query(collection(db, "detail_kepanitiaan_proker"), where("proker_id", "==", item.id));
+        const q = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker));
+
         const querySnapshot = await getDocs(q);
+        console.log("ID Proker:", item.id_proker);
+
         const anggotaList = await Promise.all(
-          querySnapshot.docs.map(async (doc) => {
-            const userDoc = await getDocs(query(collection(db, "users"), where("id", "==", doc.data().id_user)));
-            return userDoc.docs[0].data().nama;
-          })
+          querySnapshot.docs
+            .filter((doc) => doc.data().role_proker !== "Ketua Proker") // Filter untuk mengecualikan "Ketua Proker"
+            .map(async (doc) => {
+              // Ambil data user berdasarkan id_user
+              const userSnapshot = await getDocs(query(collection(db, "users"), where("id_user", "==", doc.data().id_user)));
+
+              // Pastikan ada data user yang sesuai
+              if (!userSnapshot.empty) {
+                return userSnapshot.docs[0].data().nama; // Ambil nama user
+              }
+
+              return null; // Jika tidak ditemukan, kembalikan null
+            })
         );
+
+        // Hapus anggota yang bernilai null (data user tidak ditemukan)
+        const filteredAnggotaList = anggotaList.filter((nama) => nama !== null);
+
+        // Simpan anggota ke dalam state
         setProker((prevProker) => ({
           ...prevProker,
-          anggota: anggotaList,
+          anggota: filteredAnggotaList,
         }));
+
+        console.log("Anggota List:", filteredAnggotaList);
       } catch (error) {
         console.error("Error fetching anggota: ", error);
       }
@@ -63,7 +82,7 @@ const DetailProkerAnggota = () => {
     const getKetuaProker = async () => {
       try {
         // Query untuk mendapatkan detail_kepanitiaan_proker dengan proker_id dan jabatan "Ketua Proker"
-        const detailQuery = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker), where("jabatan", "==", "Ketua Proker"));
+        const detailQuery = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker), where("role_proker", "==", "Ketua Proker"));
         const detailSnapshot = await getDocs(detailQuery);
 
         if (!detailSnapshot.empty) {
@@ -230,7 +249,7 @@ const DetailProkerAnggota = () => {
           ))}
         </View>
 
-        {/* Tombol Aksi */}
+        {/* Tombol Aksi
         <View className="flex-row justify-between pb-3 mt-4 border-b-2 border-gray-300">
           <Pressable className="flex-1 p-2 mr-2 bg-blue-500 rounded-lg" onPress={() => setModalVisible(true)}>
             <Text className="text-center text-white">Edit Proker</Text>
@@ -238,7 +257,7 @@ const DetailProkerAnggota = () => {
           <Pressable className="flex-1 p-2 ml-2 bg-red-500 rounded-lg" onPress={handleDelete}>
             <Text className="text-center text-white">Hapus Proker</Text>
           </Pressable>
-        </View>
+        </View> */}
 
         {/* {Daftar Divisi} */}
         <View className="mt-5">

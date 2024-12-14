@@ -44,23 +44,36 @@ const DetailProkerKetuaPro = () => {
     const fetchAnggota = async () => {
       try {
         const q = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker));
+
         const querySnapshot = await getDocs(q);
-        console.log("ID Proker:", item.id);
-        querySnapshot.forEach((doc) => {
-          console.log("doc.data().id_user:", doc.data().id_user); // Tampilkan id_user dari masing-masing dokumen
-        });
+        console.log("ID Proker:", item.id_proker);
+
         const anggotaList = await Promise.all(
-          querySnapshot.docs.map(async (doc) => {
-            const userDoc = await getDocs(query(collection(db, "users"), where("id_user", "==", doc.data().id_user)));
-            return userDoc.docs[0].data().nama;
-          })
+          querySnapshot.docs
+            .filter((doc) => doc.data().role_proker !== "Ketua Proker") // Filter untuk mengecualikan "Ketua Proker"
+            .map(async (doc) => {
+              // Ambil data user berdasarkan id_user
+              const userSnapshot = await getDocs(query(collection(db, "users"), where("id_user", "==", doc.data().id_user)));
+
+              // Pastikan ada data user yang sesuai
+              if (!userSnapshot.empty) {
+                return userSnapshot.docs[0].data().nama; // Ambil nama user
+              }
+
+              return null; // Jika tidak ditemukan, kembalikan null
+            })
         );
+
+        // Hapus anggota yang bernilai null (data user tidak ditemukan)
+        const filteredAnggotaList = anggotaList.filter((nama) => nama !== null);
+
+        // Simpan anggota ke dalam state
         setProker((prevProker) => ({
           ...prevProker,
-          anggota: anggotaList,
+          anggota: filteredAnggotaList,
         }));
 
-        console.log("Anggota List:", anggotaList);
+        console.log("Anggota List:", filteredAnggotaList);
       } catch (error) {
         console.error("Error fetching anggota: ", error);
       }
@@ -69,7 +82,7 @@ const DetailProkerKetuaPro = () => {
     const getKetuaProker = async () => {
       try {
         // Query untuk mendapatkan detail_kepanitiaan_proker dengan proker_id dan jabatan "Ketua Proker"
-        const detailQuery = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker), where("jabatan", "==", "Ketua Proker"));
+        const detailQuery = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker), where("role_proker", "==", "Ketua Proker"));
         const detailSnapshot = await getDocs(detailQuery);
 
         if (!detailSnapshot.empty) {

@@ -71,8 +71,10 @@ const EditDivisiProker = () => {
     }
 
     try {
+      // Dapatkan ID Divisi Proker (Auto Increment)
       const idDivisiProker = await getNextId();
 
+      // Tambahkan data ke koleksi `divisi_proker`
       await addDoc(collection(db, "divisi_proker"), {
         id_divisi_proker: idDivisiProker,
         nama_divisi: form.nama_divisi,
@@ -80,12 +82,52 @@ const EditDivisiProker = () => {
         id_proker: id_proker, // Simpan ID Proker
         co_divisi: form.co_divisi, // Simpan ID User sebagai CO Divisi
       });
-      console.log("ID Co:", form.co_divisi);
+
       console.log("Divisi berhasil ditambahkan, ID Divisi: ", idDivisiProker);
-      alert("Divisi berhasil ditambahkan!");
+
+      // Dapatkan ID Kepanitiaan Proker (Auto Increment)
+      const getNextKepanitiaanId = async () => {
+        const counterRef = doc(db, "counters", "detail_kepanitiaan_proker");
+        try {
+          const newId = await runTransaction(db, async (transaction) => {
+            const counterDoc = await transaction.get(counterRef);
+
+            if (!counterDoc.exists()) {
+              transaction.set(counterRef, { id_kepanitiaan_proker: 1 });
+              return 1;
+            }
+
+            const currentId = counterDoc.data().id_kepanitiaan_proker;
+            const nextId = currentId + 1;
+            transaction.update(counterRef, { id_kepanitiaan_proker: nextId });
+            return nextId;
+          });
+          return newId;
+        } catch (error) {
+          console.error("Error getting next Kepanitiaan ID: ", error);
+          throw new Error("Gagal mendapatkan ID baru untuk detail kepanitiaan.");
+        }
+      };
+
+      const idKepanitiaanProker = await getNextKepanitiaanId();
+
+      // Tambahkan data ke koleksi `detail_kepanitiaan_proker`
+      await addDoc(collection(db, "detail_kepanitiaan_proker"), {
+        id_kepanitiaan_proker: idKepanitiaanProker,
+        id_proker: id_proker,
+        id_divisi_proker: idDivisiProker,
+        id_user: form.co_divisi, // ID User yang dipilih sebagai CO Divisi
+        role_proker: "Co Divisi", // Tetapkan role sebagai "Co Divisi"
+      });
+
+      console.log("Detail kepanitiaan berhasil ditambahkan, ID Kepanitiaan: ", idKepanitiaanProker);
+
+      alert("Divisi dan detail kepanitiaan berhasil ditambahkan!");
+
+      // Reset form setelah sukses
       setForm({ nama_divisi: "", deskripsi_divisi: "", co_divisi: "" });
     } catch (error) {
-      console.error("Error menambahkan dokumen: ", error);
+      console.error("Error saat menyimpan data: ", error);
       alert("Gagal menyimpan data.");
     }
   };
