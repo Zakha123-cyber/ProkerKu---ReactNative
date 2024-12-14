@@ -2,11 +2,11 @@ import { View, Text, ScrollView, Alert, Pressable, ActivityIndicator, Modal, But
 import React, { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
 import { collection, getDocs, query, where, doc, updateDoc, arrayUnion, getDoc, setDoc } from "firebase/firestore";
-import ListJobdeskProker from "./ListJobdeskCo";
+import ListJobdeskProker from "./ListJobdesk";
 import TambahJobs from "../components/IconTambahJobs";
 import { Picker } from '@react-native-picker/picker';
 
-const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
+const DetailDivisiPage = ({ idDivisi, idProker, deskripsiDivisi }) => {
   const [userData, setUserData] = useState(null); // Data user CO Divisi
   const [loading, setLoading] = useState(true); // Indikator loading
   const [anggotaDivisi, setAnggotaDivisi] = useState([]); // Menyimpan daftar anggota divisi
@@ -146,7 +146,7 @@ const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
         </View>
 
         <View className="p-2 mb-2 border-2 border-gray-300 rounded-lg">
-          <Text className="text-gray-600 font-semibold">Anggota Divisi:</Text>
+          <Text className="font-semibold text-gray-600">Anggota Divisi:</Text>
           {anggotaDivisi.length > 0 ? (
             anggotaDivisi.map((anggota, index) => (
               <Text key={index} className="text-gray-500">{anggota}</Text>
@@ -157,13 +157,13 @@ const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
         </View>
 
         <Modal visible={showModal} animationType="slide" transparent={true}>
-          <View className="flex-1 justify-center items-center bg-gray-500 bg-opacity-50">
-            <View className="bg-white p-4 rounded-lg">
-              <Text className="text-xl font-semibold mb-3">Tambah Anggota</Text>
+          <View className="items-center justify-center flex-1 bg-gray-500 bg-opacity-50">
+            <View className="p-4 bg-white rounded-lg">
+              <Text className="mb-3 text-xl font-semibold">Tambah Anggota</Text>
               <Picker
                 selectedValue={selectedUser?.id_user}
                 onValueChange={(itemValue) => setSelectedUser(usersList.find((user) => user.id_user === itemValue))}
-                className="border-2 border-gray-300 rounded-lg p-2 mb-3"
+                className="p-2 mb-3 border-2 border-gray-300 rounded-lg"
               >
                 <Picker.Item label="Pilih anggota..." value={null} />
                 {usersList.map((user) => (
@@ -182,4 +182,4 @@ const DetailDivisiPageCo = ({ idDivisi, idProker, deskripsiDivisi }) => {
   );
 };
 
-export default DetailDivisiPageCo;
+export default DetailDivisiPage;
