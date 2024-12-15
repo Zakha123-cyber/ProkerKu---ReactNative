@@ -8,14 +8,16 @@ import DetailDivisiAnggota from "./DetailDivisiAnggota";
 const Stack = createNativeStackNavigator();
 
 
-const HomeKetuaProNavigator = () => {
+const HomeAnggotaNavigator = ({ route }) => {
+  const { role_id, nama, id_user } = route.params;
+
   return (
     <Stack.Navigator>
-      <Stack.Screen name="HomeAnggota" component={HomeAnggota} options={{ headerShown: false }} />
+      <Stack.Screen name="HomeAnggota" component={HomeAnggota} options={{ headerShown: false }} initialParams={{ role_id, nama, id_user }} />
       <Stack.Screen name="DetailProkerAnggota" component={DetailProkerAnggota} options={{ headerShown: false }} />
       <Stack.Screen name="DetailDivisiAnggota" component={DetailDivisiAnggota} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
 
-export default HomeKetuaProNavigator;
+export default HomeAnggotaNavigator;

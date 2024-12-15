@@ -4,10 +4,12 @@ import { db } from "../../../firebaseConfig";
 import { collection, addDoc, doc, runTransaction, getDocs } from "firebase/firestore";
 import { useRoute } from "@react-navigation/native";
 import RNPickerSelect from "react-native-picker-select";
+import { useLocalSearchParams } from "expo-router";
 
-const EditDivisiProker = () => {
-  const route = useRoute();
-  const { id_proker } = route.params; // Ambil id_proker dari route params
+const EditDivisiProker = ( ) => {
+  // const route = useRoute();
+  // const { id_proker } = route.params; // Ambil id_proker dari route params
+  const { id_proker } = useLocalSearchParams();
   console.log("ID Proker:", id_proker);
 
   const [form, setForm] = useState({

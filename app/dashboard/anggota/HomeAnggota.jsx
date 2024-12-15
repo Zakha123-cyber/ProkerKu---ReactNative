@@ -6,8 +6,16 @@ import SearchInput from "../../../components/SearchInput";
 import TambahProker from "../../../components/IconTambahProker";
 import ManagemenUser from "../../../components/IconManagementUser";
 import CardProker from "../../../components/CardProker";
+import { useRoute } from "@react-navigation/native";
+import { useUser } from "../../../context/UserContext";
 
 const HomeAnggota = () => {
+  // const route = useRoute();
+  // const { role_id, nama, id_user } = route.params;
+  // console.log("Role ID: ", role_id);
+  // console.log("Nama: ", nama);
+  const { user } = useUser();
+
   const renderHeader = () => (
     <View className="px-4 my-6 space-y-6 bg-green-400">
       <View className="flex-row items-center justify-between mb-6">
@@ -31,11 +39,13 @@ const HomeAnggota = () => {
     <SafeAreaView className="flex-1 bg-gray-100">
       {renderHeader()}
       <View className="px-2">
-        <SearchInput className="p-2 border border-green-500 rounded-lg" />
         <View className="flex-row justify-center gap-10 pb-2 mx-3 my-3 border-b-2 border-gray-300">
           <Text>HomeAnggota</Text>
         </View>
-        <CardProker Tujuan = {"DetailProkerAnggota"} />
+        <View className="py-3">
+          <Text className="text-2xl text-center text-green-400 font-pextrabold">Daftar Proker</Text>
+        </View>
+        <CardProker id_role={user.role_id} id_user={user.id_user} Tujuan={"DetailProkerAnggota"} />
       </View>
     </SafeAreaView>
   );

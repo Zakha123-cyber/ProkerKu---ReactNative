@@ -9,7 +9,7 @@ import TambahJobs from "../co/TambahJobs";
 const Stack = createNativeStackNavigator();
 
 
-const HomeKetuaProNavigator = ( { route } ) => {
+const HomeCoDivisiNavigator = ( { route } ) => {
   const { role_id, nama, id_user } = route.params;
   return (
     <Stack.Navigator>
@@ -21,4 +21,4 @@ const HomeKetuaProNavigator = ( { route } ) => {
   );
 };
 
-export default HomeKetuaProNavigator;
+export default HomeCoDivisiNavigator;

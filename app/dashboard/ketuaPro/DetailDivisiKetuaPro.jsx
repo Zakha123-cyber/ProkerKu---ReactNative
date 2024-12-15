@@ -1,13 +1,17 @@
 import React from "react";
 import DetailDivisiPage from "../../../components/DetailDivisiPage";
-import { useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native"; 
+import { useLocalSearchParams } from "expo-router";
 
 const DetailDivisiKetuaPro = () => {
-  const route = useRoute();
-  const { idDivisi, idProker, deskripsiDivisi } = route.params; // Menerima parameter dari navigasi
+  const {idDivisi, idProker, deskripsiDivisi} = useLocalSearchParams();
+  console.log("idDivisi:", idDivisi);
+  console.log("idProker:", idProker);
+  // const route = useRoute();
+  // const { idDivisi, idProker, deskripsiDivisi } = route.params; // Menerima parameter dari navigasi
   
 
-  return <DetailDivisiPage idDivisi={idDivisi} idProker={idProker} deskripsiDivisi={deskripsiDivisi} />;
+  return <DetailDivisiPage id_divisi={idDivisi} id_proker={idProker} deskripsiDivisi={deskripsiDivisi} />;
 };
 
 export default DetailDivisiKetuaPro;

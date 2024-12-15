@@ -215,7 +215,7 @@ const DetailProkerAnggota = () => {
         <Image source={{ uri: proker.image }} className="w-full mb-4 rounded-lg h-60" resizeMode="cover" />
 
         {/* Nama Proker */}
-        <Text className="mb-2 text-2xl font-bold">{proker.nama}</Text>
+        <Text className="mb-2 text-2xl font-bold">{proker.nama} ini anggota</Text>
 
         {/* Timeline */}
         <View className="p-2 mb-2 border-2 border-gray-300 rounded-lg">

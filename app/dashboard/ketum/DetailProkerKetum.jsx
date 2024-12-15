@@ -10,6 +10,7 @@ const DetailProkerScreen = () => {
   const route = useRoute();
   const { item } = route.params;
   const idProker = item.id_proker;
+  console.log("ini detail proker dari ketum", item);
 
   const formatDate = (timestamp) => {
     if (!timestamp) return "Tanggal tidak tersedia";

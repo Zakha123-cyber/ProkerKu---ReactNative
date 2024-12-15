@@ -6,7 +6,11 @@ import ListJobdeskProker from "./ListJobdesk";
 import TambahJobs from "../components/IconTambahJobs";
 import { Picker } from '@react-native-picker/picker';
 
-const DetailDivisiPage = ({ idDivisi, idProker, deskripsiDivisi }) => {
+const DetailDivisiPage = ({ id_divisi, id_proker, deskripsiDivisi }) => {
+  const idDivisi = Number(id_divisi); // ID Divisi
+  const idProker = Number(id_proker); // ID Proker
+  console.log("ID Divisi:", idDivisi);
+  console.log("ID Proker:", idProker);
   const [userData, setUserData] = useState(null); // Data user CO Divisi
   const [loading, setLoading] = useState(true); // Indikator loading
   const [anggotaDivisi, setAnggotaDivisi] = useState([]); // Menyimpan daftar anggota divisi

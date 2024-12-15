@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { View, Text, Image, ScrollView, Pressable, TextInput, Alert, TouchableOpacity, Modal } from "react-native";
-import CardDetailDivisi from "../../../components/CardDivisiProker";
+import CardDetailDivisi from "../../../components/CardDivisiProkerKetuaProker";
 import { useRoute } from "@react-navigation/native";
 import { doc, collection, getDocs, query, where, addDoc, orderBy, limit, deleteDoc } from "firebase/firestore";
 import { Picker } from "@react-native-picker/picker";
 import { db } from "../../../firebaseConfig";
 import TambahDivisiProker from "../../../components/IconTambahDivisi";
+import { useLocalSearchParams } from "expo-router";
 
 const DetailProkerKetuaPro = () => {
-  const route = useRoute();
-  const { item } = route.params;
-  const idProker = item.id_proker;
+  const { id_proker, nama_proker, tanggal_pelaksanaan, gambar, deskripsi } = useLocalSearchParams();
+  const item = { id_proker, nama_proker, tanggal_pelaksanaan, gambar, deskripsi };
+  console.log("ini item dari detail bro: ", item);
+  const idProker = Number(item.id_proker);
+  console.log("ini id proker: ", idProker);
+  console.log(typeof  idProker);
 
   const formatDate = (timestamp) => {
     if (!timestamp) return "Tanggal tidak tersedia";
@@ -28,7 +32,7 @@ const DetailProkerKetuaPro = () => {
     timeline: formatDate(item.tanggal_pelaksanaan),
     ketua: "",
     anggota: [],
-    deskripsi: item.deskripsi_proker,
+    deskripsi: item.deskripsi,
   };
 
   const [proker, setProker] = useState(initialProker);
@@ -43,7 +47,7 @@ const DetailProkerKetuaPro = () => {
   useEffect(() => {
     const fetchAnggota = async () => {
       try {
-        const q = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker));
+        const q = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", idProker));
 
         const querySnapshot = await getDocs(q);
         console.log("ID Proker:", item.id_proker);
@@ -82,7 +86,7 @@ const DetailProkerKetuaPro = () => {
     const getKetuaProker = async () => {
       try {
         // Query untuk mendapatkan detail_kepanitiaan_proker dengan proker_id dan jabatan "Ketua Proker"
-        const detailQuery = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", item.id_proker), where("role_proker", "==", "Ketua Proker"));
+        const detailQuery = query(collection(db, "detail_kepanitiaan_proker"), where("id_proker", "==", idProker), where("role_proker", "==", "Ketua Proker"));
         const detailSnapshot = await getDocs(detailQuery);
 
         if (!detailSnapshot.empty) {
@@ -212,6 +216,7 @@ const DetailProkerKetuaPro = () => {
         id_detail_kepanitiaan_proker: Number(lastId),
         id_proker: Number(item.id_proker),
         id_user: Number(selectedUser.id),
+        role_proker: "Anggota",
       });
       setProker((prevProker) => ({
         ...prevProker,
@@ -239,7 +244,7 @@ const DetailProkerKetuaPro = () => {
         <Image source={{ uri: proker.image }} className="w-full mb-4 rounded-lg h-60" resizeMode="cover" />
 
         {/* Nama Proker */}
-        <Text className="mb-2 text-2xl font-bold">{proker.nama}</Text>
+        <Text className="mb-2 text-2xl font-bold">{proker.nama} ini ketupro</Text>
 
         {/* Timeline */}
         <View className="p-2 mb-2 border-2 border-gray-300 rounded-lg">
@@ -297,7 +302,7 @@ const DetailProkerKetuaPro = () => {
             divisiProker.map((divisi) => (
               <CardDetailDivisi
                 key={divisi.id}
-                PageTujuan={"DetailDivisiKetuaProker"}
+                PageTujuan={"/dashboard/ketuaPro/DetailDivisiKetuaPro"}
                 namaDivisi={divisi.nama_divisi}
                 deskripsiDivisi={divisi.deskripsi_divisi}
                 idDivisi={divisi.id_divisi_proker} // Kirim data tambahan jika diperlukan
@@ -496,9 +501,19 @@ const DetailProkerKetuaPro = () => {
           </View>
         </View>
       </Modal>
-      <TambahDivisiProker idProker={idProker} />
+      <TambahDivisiProker idProker={idProker}/>
     </ScrollView>
   );
 };
 
 export default DetailProkerKetuaPro;
+
+export async function getStaticProps() {
+  return {
+    props: {
+      options: {
+        headerShown: false, // Menyembunyikan header
+      },
+    },
+  };
+}

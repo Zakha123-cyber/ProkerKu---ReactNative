@@ -7,7 +7,7 @@ import { Picker } from "@react-native-picker/picker";
 import { db } from "../../../firebaseConfig";
 import TambahDivisiProker from "../../../components/IconTambahDivisi";
 
-const DetailProkerKetuaPro = () => {
+const DetailProkerCoDivisi = () => {
   const route = useRoute();
   const { item } = route.params;
   const idProker = item.id_proker;
@@ -278,4 +278,4 @@ const DetailProkerKetuaPro = () => {
   );
 };
 
-export default DetailProkerKetuaPro;
+export default DetailProkerCoDivisi;
